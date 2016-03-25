@@ -3,7 +3,7 @@
 \usepackage[T1]{fontenc} \usepackage{lmodern} \usepackage[utf8]{inputenc}
 \usepackage[english]{babel} \usepackage{csquotes}
 \usepackage{float} \usepackage{graphicx,subfig}
-\usepackage{amssymb,amsmath} \usepackage{siunitx}
+\usepackage{amssymb,amsmath} %\usepackage{siunitx}
 \usepackage[nodayofweek]{datetime}
 \usepackage[top=3.5cm,bottom=2.5cm,left=3cm,right=3cm,headheight=30pt]{geometry}
 \usepackage[style=numeric,backend=biber]{biblatex} \bibliography{refs}
@@ -70,8 +70,8 @@ research in which we could contribute:
 		inter-nodes communication cost as well as the design of a merging or
 		synchronization scheme. Novel proofs of convergence could be required.
 	\item Explore the application of these algorithms to minmax problems which
-		aim at finding saddle points.
-	\item Use these methods to fit various statistical models.
+		aim at finding saddle points. The min-max formulation appears in the context of zero-sum games and robust optimization. Traditionally, robust optimization problems focus on converting the minimax problem to a minimization problem by leveraging duality theory. Instead, we aim to find the saddle points using incremental methods.
+	\item Use these methods to fit various statistical models. In particular, we are interested in Gaussian Mixture Model (GMM) problem using techniques in manifold optimization literature. Our goal is to adapt one of the incremental method for solving GMM problem. 
 		%manifold optimization problems (e.g. GMM).
 \end{enumerate}
 
