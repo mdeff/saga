@@ -1,0 +1,46 @@
+2016-03-11 First discussion
+---------------------------
+
+Partner: Soroosh Shafiee
+He wants to work on algorithms, not applications.
+Proposed subject: stochastic gradient methods.
+Pointers:
+* Incremental Aggregated Proximal and Augmented Lagrangian Algorithms
+  http://arxiv.org/pdf/1509.09257.pdf
+* SMART: The Stochastic Monotone Aggregated Root-Finding Algorithm
+  http://arxiv.org/abs/1601.00698
+  https://vimeo.com/156600995
+
+
+2016-03-24 Reading papers
+-------------------------
+
+I'm also interested in these stochastic methods to train complex deep learning
+models.
+
+Project: improve SAGA with GradientWaste
+Roles: each of us take on a potential acceleration
+
+SVRG vs SAGA: computation vs memory (SVRG only for strongly convex)
+Idea: play on this trade-off
+I would prefer a simple (albeit sub-optimal) algorithm than a set of tricks.
+
+Tricks:
+1. SVRG with error: approximate FG
+   Not applicable as SAGA does not require any FG.
+2. Mixed SG and SVRG: 1 eval per step at start
+   Not applicable as SAGA only evaluates one gradient per step.
+3. Support vectors: less evals at end
+
+
+2016-03-24 Proposal discussion
+------------------------------
+
+Incremental convex minimization algorithms
+
+1. Play with trade-off of computation and memory of SAGA and SVRG. Memory constraint on SAGA
+2. Distributing computations on more CPU.
+3. Explore their application to minmax problems to find saddle points.
+4. Fit statistical models. Apply these incremental algorithms to manifold
+   optimization problems, e.g. GMM. Contact Reshad Hosseini.
+5. Try to improve the proofs (bound or simplicity).
