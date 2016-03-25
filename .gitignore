@@ -5,4 +5,8 @@
 *.fls
 *.log
 *.out
+
+*.bcf
+*.run.xml
+
 *.pdf

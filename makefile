@@ -8,3 +8,4 @@ all: $(PDF)
 
 clean:
 	rm -f *.{aux,bbl,blg,fdb_latexmk,fls,log,out}
+	rm -f *.{bcf,run.xml}
