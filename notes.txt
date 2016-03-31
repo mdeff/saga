@@ -49,10 +49,12 @@ Incremental convex minimization algorithms
 2016-03-31 Meeting with Volkan's postdoc Vu Cong Bang
 -----------------------------------------------------
 
+* Introduction: clearer goal (understand, thinker).
 * Introduction: what is the role of h ? It can also be an indicator function of
   some set constraint.
 * DIR1: give an example of dataset for which SAGA wouldn't work.
 * DIR2: example where a distributed implementation would be useful.
+* Other direction: SVRG without the strong convexity constraint.
 * Volkan has a paper (it cites SVRG, SAGA)
 * Add references
 	* DIR1: https://papers.nips.cc/paper/5610-stochastic-proximal-gradient-descent-with-acceleration-techniques.pdf
