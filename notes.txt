@@ -44,3 +44,18 @@ Incremental convex minimization algorithms
 4. Fit statistical models. Apply these incremental algorithms to manifold
    optimization problems, e.g. GMM. Contact Reshad Hosseini.
 5. Try to improve the proofs (bound or simplicity).
+
+
+2016-03-31 Meeting with Volkan's postdoc Vu Cong Bang
+-----------------------------------------------------
+
+* Introduction: what is the role of h ? It can also be an indicator function of
+  some set constraint.
+* DIR1: give an example of dataset for which SAGA wouldn't work.
+* DIR2: example where a distributed implementation would be useful.
+* Volkan has a paper (it cites SVRG, SAGA)
+* Add references
+	* DIR1: https://papers.nips.cc/paper/5610-stochastic-proximal-gradient-descent-with-acceleration-techniques.pdf
+	* DIR2: http://arxiv.org/pdf/1407.0898.pdf
+	* DIR4: http://www.jmlr.org/papers/volume13/lee12a/lee12a.pdf
+	* (http://arxiv.org/pdf/1503.03703.pdf)
