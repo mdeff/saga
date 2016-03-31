@@ -36,12 +36,11 @@ some of the newest Incremental Gradient Methods such as SAG
 \cite{defazio_saga_2014}. This class of algorithms have been developed to solve
 problems of the form
 \begin{equation} \label{eqn:problem}
-	\argmin_{x \in \R^d} \frac{1}{n} \sum_{i=1}^n f_i(x) + h(x),
+	\min_{x \in \R^d} \frac{1}{n} \sum_{i=1}^n f_i(x) + h(x),
 \end{equation}
 where each $f_i$ is convex and has Libschitz continuous derivatives with
-constant $L$ or is strongly convex with constant $\mu$. The regularization
-function $h$ is convex but potentially non-differentiable (his proximal operator
-is however easy to compute). While computing the full gradient would be
+constant $L$ or is strongly convex with constant $\mu$. The function $h$ can be seen as a regularizer which is convex and potentially non-differentiable (his proximal operator
+is however easy to compute) or it can be seen as a characteristic function of a set to tackle constrained problems. While computing the full gradient would be
 prohibitive due to large $d$ and $n$, these iterative stochastic algorithms
 reduce the computational cost of optimization by only computing the gradient of
 a subset of the functions $f_i$ at each step.
@@ -58,19 +57,19 @@ research in which we could contribute:
 	\setlength{\itemsep}{0pt} \setlength{\parskip}{0pt}
 	\item Play with the trade-off between the computational efficiency of SAGA
 		and the memory efficiency of SVRG, especially relevant when working with
-		large datasets, i.e. large $n$. A first approach to compromise on the
+		large datasets, e.g. covtype.scale dataset with $n=522910$. A first approach to compromise on the
 		memory requirement of SAGA would be to store averaged gradients over
 		mini-batches instead of the full gradient matrix. This task will involve
-		the implementation and empirical testing of the devised scheme. A novel
+		the implementation and empirical testing of the devised scheme such as the method proposed in \cite{nitanda2014stochastic}. A novel
 		proof of convergence can be envisioned.
 	\item A distributed implementation of one of those algorithms. This would be
 		useful to diminish the clock time needed to solve a given problem or to
 		solve large-scale optimizations where the memory of one computer is not
 		sufficient anymore. This goal will require the analysis of the
 		inter-nodes communication cost as well as the design of a merging or
-		synchronization scheme. Novel proofs of convergence could be required.
+		synchronization scheme \cite{bianchi2014coordinate}. Novel proofs of convergence could be required.
 	\item Explore the application of these algorithms to minimax problems which
-		aim at finding saddle points. The min-max formulation appears in the
+		aim at finding saddle points \cite{nemirovski2009robust}. The min-max formulation appears in the
 		context of zero-sum games and robust optimization. Traditionally, robust
 		optimization problems focus on converting the minimax problem to a
 		minimization problem by leveraging duality theory. Instead, we aim to
@@ -78,11 +77,9 @@ research in which we could contribute:
 	\item Use these methods to fit statistical models. In particular, we are
 		interested to fit a Gaussian Mixture Model (GMM) viewed as a manifold
 		optimization problem. Our goal would be to adapt one of the incremental
-		methods to fit GMMs.
+		methods to fit GMMs \cite{reshad_matrix_2015}.
 \end{enumerate}
-We do not expect to complete all of the above objectives. While we are confident
-about the successes of the first two, we are not sure about the feasibility of
-the last two. We plan to discuss with experts in the domain\footnote{Such as the
+We do not expect to complete all of the above objectives. We plan to discuss with experts in the domain\footnote{Such as the
 first author of \cite{reshad_matrix_2015}, whom Soroosh met during his master
 studies. Or someone from the EPFL LIONS lab.}.
 
