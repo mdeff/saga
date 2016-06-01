@@ -32,11 +32,11 @@ cdef inline spdot(double[:] x, double[:] ydata , long[:] yindices, int ylen):
     cdef double v = 0.0
 
     for i in range(ylen):
-        v += ydata[i]*x[yindices[i]]
+        v += ydata[i] * x[yindices[i]]
 
     return v
 
-def saga_lstsq(A,double[:] b, unsigned int maxiter, props):
+def saga_lstsq(A, double[:] b, unsigned int maxiter, props):
 
     # temporaries
     cdef double[:] ydata
@@ -61,7 +61,7 @@ def saga_lstsq(A,double[:] b, unsigned int maxiter, props):
     cdef double betak = 1.0 # Scaling factor for xk.
 
     # Tracks for each entry of x, what iteration it was last updated at.
-    cdef unsigned long[:] lag = np.zeros(m, dtype='I')
+    cdef unsigned long[:] lag = np.zeros(m, dtype=np.uint64)
 
     # Initialize gradients
     cdef double gd = -1.0/n
