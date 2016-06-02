@@ -36,7 +36,7 @@ cdef inline spdot(double[:] x, double[:] ydata , long[:] yindices, int ylen):
 
     return v
 
-def saga_lstsq(A, double[:] b, unsigned int maxiter, props):
+def saga_lstsq(A, double[:] b, unsigned int maxiter, props, double[:] x_natural=None):
 
     # temporaries
     cdef double[:] ydata
@@ -128,7 +128,7 @@ def saga_lstsq(A, double[:] b, unsigned int maxiter, props):
             add_weighted(gk, ydata, yindices, ylen, cchange/n)
 
     # Perform the just in time updates for the whole xk vector, so that all entries are up-to-date.
-    gscaling =-1.0/(eta*betak)
+    gscaling = -1.0 / (eta*betak)
     for ind in range(m):
         lagged_amount = k-lag[ind]
         lag[ind] = k
