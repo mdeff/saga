@@ -18,7 +18,7 @@ function [x, info] = SAGA_lstsq(A, b, parameter)
             tic
             i = randi(n);
             % Update the next iteration
-            gx         = n * A(i,:)* (A(i,:)*x' - b(i));
+            gx         = A(i,:)* (A(i,:)*x' - b(i));
             w_next     = x - gamma * (gx - g_phi(i,:) + g_phi_av);
             x_next     = 1 / (1+lambda*gamma) * w_next;
             g_phi(i,:) = gx;     

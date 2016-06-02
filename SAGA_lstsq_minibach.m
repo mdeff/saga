@@ -20,7 +20,7 @@ function [x, info] = SAGA_lstsq_minibach(A, b, parameter)
             perm = randperm(n);
             i = perm(1:s);
             % Update the next iteration
-            gx         = n * A(i,:) .* repmat((A(i,:)*x' - b(i)),[1,d]);
+            gx         = A(i,:) .* repmat((A(i,:)*x' - b(i)),[1,d]);
             w_next     = x - gamma * (mean(gx,1) - mean(g_phi(i,:)) + g_phi_av);
             x_next     = 1 / (1+lambda*gamma) * w_next;
             g_phi(i,:) = gx;     
