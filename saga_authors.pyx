@@ -36,7 +36,7 @@ cdef inline spdot(double[:] x, double[:] ydata , long[:] yindices, int ylen):
 
     return v
 
-def saga_lstsq(A, double[:] b, unsigned int maxiter, props, double[:] x_natural=None):
+def saga_lstsq(A, double[:] b, unsigned int maxiter, props):
 
     # temporaries
     cdef double[:] ydata
