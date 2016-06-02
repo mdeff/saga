@@ -5,8 +5,6 @@
 *.fls
 *.log
 *.out
-*.txt
-*.mat
 
 *.synctex.gz
 
@@ -17,5 +15,9 @@
 
 .idea/
 .ipynb_checkpoints/
+
+*.txt
+*.mat
+*.asv
 
 YearPredictionMSD.txt*
