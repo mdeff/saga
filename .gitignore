@@ -5,6 +5,8 @@
 *.fls
 *.log
 *.out
+*.txt
+*.mat
 
 *.synctex.gz
 

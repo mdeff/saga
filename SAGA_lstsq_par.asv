@@ -16,13 +16,17 @@ function [x, info] = SAGA_lstsq(A, b, parameter)
     for epoch = 1 : epoch_max       
         for j = 1 : n
             tic
-            i = randi(n);
-            % Update the next iteration
-            gx         = A(i,:)* (A(i,:)*x' - b(i));
-            w_next     = x - gamma * (gx - g_phi(i,:) + g_phi_av);
-            x_next     = 1 / (1+lambda*gamma) * w_next;
-            g_phi(i,:) = gx;     
-            g_phi_av   = mean(g_phi,1);
+            x_next = zeros(m,d);
+            ind = zeros(m);
+            parfor k = 1 : m
+                i = randi(n);
+                % Update the next iteration
+                gx         = A(i,:)* (A(i,:)*x' - b(i));
+                w_next     = x - gamma * (gx - g_phi(i,:) + g_phi_av);
+                x_next(k,:)  = 1 / (1+lambda*gamma) * w_next;
+                ind
+            end   
+            g_phi(i,:) = gx;
             % Save information
             info.iter_time(end+1) = toc;
             info.fx(end+1) = 0.5 * norm(A*x'-b,2)^2;               
