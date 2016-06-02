@@ -23,7 +23,7 @@ function [x, info] = SAGA_lstsq_par(A, b, parameter)
             for k = 1 : m
                 i = randi(n);
                 % Update the next iteration
-                gx          = A(i,:)* (A(i,:)*x' - b(i));
+                gx          = n * A(i,:)* (A(i,:)*x' - b(i));
                 w_next      = x - gamma * (gx - g_phi(i,:) + g_phi_av);
                 x_sub(k,:)  = 1 / (1+lambda*gamma) * w_next;
                 ind(k)      = i;

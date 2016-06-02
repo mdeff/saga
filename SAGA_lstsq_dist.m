@@ -1,4 +1,4 @@
-function [x, info] = SAGA_lstsq_dist(A, b, parameter, x_org)
+function [x, info] = SAGA_lstsq_dist(A, b, parameter)
     % Parameter setting
     [n, d]       = size(A);                          
     epoch_max    = parameter.epoch_max;           % Max epoch number
@@ -29,12 +29,8 @@ function [x, info] = SAGA_lstsq_dist(A, b, parameter, x_org)
             g_phi_av_sub = mean(g_phi_sub,1);
             x_sub = x;
             for j = 1 : fix(n/m)
-                if epoch == 1
-                    i = j;
-                else
-                    i = randi(fix(n/m));
-                end
-                gx         = A_sub(i,:)* (A_sub(i,:)*x_sub' - b_sub(i));
+                i = randi(fix(n/m));
+                gx         = n * A_sub(i,:)* (A_sub(i,:)*x_sub' - b_sub(i));
                 x_next     = x_sub - gamma * (gx - g_phi_sub(i,:) + g_phi_av_sub);
                 g_phi_sub(i,:) = gx;
                 g_phi_av_sub = mean(g_phi_sub,1);
@@ -49,10 +45,8 @@ function [x, info] = SAGA_lstsq_dist(A, b, parameter, x_org)
         end
         x = mean(x_tmp,1);
 %         g_phi_av = mean(g_phi,1);
-        disp([epoch norm(A*x'-b,2)^2])
-        if abs(norm(A*x_org'-b,2)^2 - norm(A*x'-b,2)^2) <= tol
-            break
-        end
+        disp([0.5 * norm(A*x'-b,2)^2])
+        info.fx = [info.fx, repmat(0.5 * norm(A*x'-b,2)^2,1,n)];
     end        
     info.epoch = epoch;
 end
