@@ -2,7 +2,7 @@
 
 \usepackage[T1]{fontenc} \usepackage{lmodern} \usepackage[utf8]{inputenc}
 \usepackage[english]{babel} \usepackage{csquotes}
-\usepackage{float} \usepackage{graphicx,subfig}
+\usepackage{float} \usepackage{graphicx,subfigure,epstopdf}
 \usepackage{amssymb,amsmath} %\usepackage{siunitx}
 \usepackage[nodayofweek]{datetime}
 \usepackage[top=3.5cm,bottom=2.5cm,left=3cm,right=3cm,headheight=30pt]{geometry}
@@ -99,13 +99,18 @@ then becomes:
 \item Take $\phi_j^{k+1} = x^k \ \forall \ j \in \B_i$, and store $\frac1m
 	\sum_{j\in\B_i} f_j'(\phi_j^{k+1})$ in the table.
 \item Update $x$:
-	\begin{equation} \label{eqn:saga}
+	\begin{equation} \label{eqn:minisaga}
 	w^{k+1} = x^k - \gamma \left[ \frac1m \sum_{j\in\B_i} f_j'(\phi_j^{k+1})
 	- \frac1m \sum_{j\in\B_i} f_j'(\phi_j^k)
 	+ \frac1n \sum_{i=1}^m \sum_{j\in\B_i} f_j'(\phi_j^k) \right] ,
 	\end{equation}
 	$$x^{k+1} = \prox_\gamma^h (w^{k+1}).$$
 \end{enumerate}
+
+Note that mini-batches can either be formed during initialization and kept
+intact for the whole training. They can alternatively be formed again at the end
+of each training epoch. While this is much more expensive, because the gradient
+matrix has to be initialized again, we found no difference in performance.
 
 Note that mini-batches can either be formed during initialization and kept
 intact for the whole training. They can alternatively be formed again at the end
@@ -122,7 +127,72 @@ is to predict the release year of a song from audio features.
 
 \section{Distributed SAGA}
 
+In this section, we consider two distributed SAGA methods that is based on a parallelization of SAGA. An illustration of two methods is presented in Figure~\ref{2figs-show}. In the sequel, we let $m$ be the number of machines.
+
+\begin{figure*} [bt]
+	\centering
+	\subfigure[First approach]{\label{2figs-show-a} \includegraphics[width=0.48\columnwidth]{Picture2.PNG}} \hspace{0pt}
+	\subfigure[Second approach]{\label{2figs-show-b} \includegraphics[width=0.48\columnwidth]{Picture1.PNG}}
+	\caption{Distributed SAGA}
+	\label{2figs-show}
+\end{figure*}
+
+\subsection{Distributed SAGA I}
+In the first approach, we randomly partition the $n$ data points onto $m$ machines with $[n/m]$ local data points on each to parallelize the computation of \eqref{eqn:saga}. Formally speaking, at each epoch, we first partition the data to $m$ different sets. 
+form $\frac{n}m$ mini-batches $\{\B_i\}_i^{\frac{n}m}$ of size $|\B_i|
+= m$ and take gradients w.r.t. them, such that the gradient matrix is of size
+$\frac{n}m \times d$ instead of $n \times d$. The updates for iteration $k+1$
+then becomes:
+\begin{enumerate}
+	\item Pick a $i$ uniformly at random in $[1, \frac{n}m]$.
+	\item Take $\phi_j^{k+1} = x^k \ \forall \ j \in \B_i$, and store $\frac1m
+	\sum_{j\in\B_i} f_j'(\phi_j^{k+1})$ in the table.
+	\item Update $x$:
+	\begin{equation} \label{eqn:distsaga1}
+	w^{k+1} = x^k - \gamma \left[ \frac1m \sum_{j\in\B_i} f_j'(\phi_j^{k+1})
+	- \frac1m \sum_{j\in\B_i} f_j'(\phi_j^k)
+	+ \frac1n \sum_{i=1}^m \sum_{j\in\B_i} f_j'(\phi_j^k) \right] ,
+	\end{equation}
+	$$x^{k+1} = \prox_\gamma^h (w^{k+1}).$$
+\end{enumerate}
+
+\subsection{Distributed SAGA II}
+
+We first form $\frac{n}m$ mini-batches $\{\B_i\}_i^{\frac{n}m}$ of size $|\B_i|
+= m$ and take gradients w.r.t. them, such that the gradient matrix is of size
+$\frac{n}m \times d$ instead of $n \times d$. The updates for iteration $k+1$
+then becomes:
+\begin{enumerate}
+	\item Pick a $i$ uniformly at random in $[1, \frac{n}m]$.
+	\item Take $\phi_j^{k+1} = x^k \ \forall \ j \in \B_i$, and store $\frac1m
+	\sum_{j\in\B_i} f_j'(\phi_j^{k+1})$ in the table.
+	\item Update $x$:
+	\begin{equation} \label{eqn:distsaga2}
+	w^{k+1} = x^k - \gamma \left[ \frac1m \sum_{j\in\B_i} f_j'(\phi_j^{k+1})
+	- \frac1m \sum_{j\in\B_i} f_j'(\phi_j^k)
+	+ \frac1n \sum_{i=1}^m \sum_{j\in\B_i} f_j'(\phi_j^k) \right] ,
+	\end{equation}
+	$$x^{k+1} = \prox_\gamma^h (w^{k+1}).$$
+\end{enumerate}
+
 \subsection{Experiments}
+
+\begin{figure*} [bt]
+	\centering
+	\subfigure[$N=10$ training samples]{\label{3figs-a} \includegraphics[width=0.31\columnwidth]{distributed1.eps}} \hspace{0pt}
+	\subfigure[$N=100$ training samples]{\label{3figs-b} \includegraphics[width=0.31\columnwidth]{distributed2.eps}} \hspace{0pt}
+	\subfigure[$N=1000$ training samples]{\label{3figs-c} \includegraphics[width=0.31\columnwidth]{distributed3.eps}}
+	\caption{Out-of-sample performance (solid blue line) and the average CCR (dashed red line)}
+	\label{3figs}
+\end{figure*}
+
+\begin{figure*} [bt]
+	\centering
+	\subfigure[$N=10$ training samples]{\label{2figs-a} \includegraphics[width=0.48\columnwidth]{compare.eps}} \hspace{0pt}
+	\subfigure[$N=100$ training samples]{\label{2figs-b} \includegraphics[width=0.48\columnwidth]{compare2.eps}}
+	\caption{Out-of-sample performance (solid blue line) and the average CCR (dashed red line)}
+	\label{2figs}
+\end{figure*}
 
 \printbibliography
 
