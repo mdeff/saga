@@ -1,4 +1,4 @@
-function [x, info] = SAGA_lstsq_par(A, b, parameter)
+function [x, info] = SAGA_lstsq_parfor(A, b, parameter)
     % Parameter setting
     [n, d]       = size(A);                          
     epoch_max    = parameter.epoch_max;           % Max epoch number
@@ -35,11 +35,11 @@ function [x, info] = SAGA_lstsq_par(A, b, parameter)
             x_next = mean(x_sub);
             % Save information
             info.iter_time(end+1) = toc;
-            info.fx(end+1) = 0.5 * norm(A*x'-b,2)^2;               
-            disp([0.5 * (norm(A*x_next'-b,2)^2)])
+            info.fx(end+1) = 0.5 * norm(A*x'-b,2)^2;           
             % Prepare the next iteration
             x = x_next;            
         end
+        disp([0.5 * (norm(A*x_next'-b,2)^2)])
     end        
     info.epoch = epoch;
 end

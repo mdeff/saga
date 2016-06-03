@@ -21,17 +21,17 @@ function [x, info] = SAGA_lstsq_vec(A, b, parameter)
             i = perm(1:m);
             % Update the next iteration
             gx         = A(i,:) .* repmat((A(i,:)*x' - b(i)),[1,d]);
-            w_next     = repmat(x,[m,1]) - gamma * (gx - g_phi(i,:) + repmat(g_phi_av,[1,d]));
-            x_next     = 1 / (1+lambda*gamma) * mean(w_next);
+            w_next     = x - gamma * (mean(gx,1) - mean(g_phi(i,:),1) + g_phi_av);
+            x_next     = 1 / (1+lambda*gamma) * w_next;
             g_phi(i,:) = gx;     
             g_phi_av   = mean(g_phi,1);
             % Save information
             info.iter_time(end+1) = toc;
-            info.fx(end+1) = 0.5 * norm(A*x'-b,2)^2;               
-            disp([0.5 * (norm(A*x_next'-b,2)^2)])
+            info.fx(end+1) = 0.5 * norm(A*x'-b,2)^2;  
             % Prepare the next iteration
             x = x_next;            
         end
+        disp([0.5 * (norm(A*x_next'-b,2)^2)])
     end        
     info.epoch = epoch;
 end

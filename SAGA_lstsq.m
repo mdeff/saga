@@ -26,10 +26,10 @@ function [x, info] = SAGA_lstsq(A, b, parameter)
             % Save information
             info.iter_time(end+1) = toc;
             info.fx(end+1) = 0.5 * norm(A*x'-b,2)^2;               
-            disp([0.5 * (norm(A*x_next'-b,2)^2)])
             % Prepare the next iteration
             x = x_next;            
         end
+        disp([0.5 * (norm(A*x_next'-b,2)^2)])
     end        
     info.epoch = epoch;
 end
