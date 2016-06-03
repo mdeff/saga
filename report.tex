@@ -118,13 +118,13 @@ intact for the whole training. They can alternatively be formed again at the end
 of each training epoch. While this is much more expensive, because the gradient
 matrix has to be initialized again, we found no difference in performance.
 
-%\subsection{Experiments}
-%
-%As the authors of \cite{defazio_saga_2014}, we tested our method on the Million
-%Song dataset\footnote{\url{http://labrosa.ee.columbia.edu/millionsong/}}. The
-%problem, as stated on the UCI repository where the data was downloaded
-%from\footnote{\url{https://archive.ics.uci.edu/ml/datasets/YearPredictionMSD}},
-%is to predict the release year of a song from audio features.
+\subsection{Experiments}
+
+As the authors of \cite{defazio_saga_2014}, we tested our method on the Million
+Song dataset\footnote{\url{http://labrosa.ee.columbia.edu/millionsong/}}. The
+problem, as stated on the UCI repository where the data was downloaded
+from\footnote{\url{https://archive.ics.uci.edu/ml/datasets/YearPredictionMSD}},
+is to predict the release year of a song from audio features.
 
 \section{Distributed SAGA}
 
@@ -181,13 +181,7 @@ In the second approach presented in Figure~\ref{2figs-show-b}, we randomly pick 
 	$$ x^{k+1} = \frac{1}{m} \sum_{s=1}^m x^{k+1}(s) $$
 \end{enumerate}
 
-\section{Experiments}
-As the authors of \cite{defazio_saga_2014}, we tested our method on the Million
-Song dataset\footnote{\url{http://labrosa.ee.columbia.edu/millionsong/}}. The
-problem, as stated on the UCI repository where the data was downloaded
-from\footnote{\url{https://archive.ics.uci.edu/ml/datasets/YearPredictionMSD}},
-is to predict the release year of a song from audio features. 
-
+\subsection{Experiments}
 
 To showcase the capabilities of our proposed approaches, we test them with the Million Song dataset. We solve the regularized least square problem with Tikhonov regularization term. In this experiment, we set the regularization factor to $5\times 10^{-4}$ while we use $n=10^4$ training samples. Figure~\ref{3figs} shows the performance of our distributed methods. The good choice of learning in all gradient methods is crucial as it reflects in Figure~\ref{3figs-a} and \ref{3figs-c}. Moreover, Figure~\ref{3figs-b} presents the required time for $1000$ iteration using different models, namely using parfor loop which is the pure distributed implementation, for loop which is a serial distribution, and vectorization which relies on parallel computation in linear algebra MATLAB libraries. As you can see, the communication overhead in parfor is so costly and it is better to implement every thing in vectorized form.
 
