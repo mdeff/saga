@@ -21,7 +21,7 @@ L  = norm(A_tr'*A_tr/n);
 param.epoch_max = 20;
 param.gamma = 1/(3*(mu*n+1));
 param.x0 = zeros(1, d);
-param.lambda = 1e-3;
+param.lambda = 5e-4;
 param.m = 8;
 param.s = 50;
 
