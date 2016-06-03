@@ -142,21 +142,21 @@ In this section, we consider two distributed SAGA methods that is based on a par
 In the first approach presented in Figure~\ref{2figs-show-a}, we randomly partition the $n$ data points onto $m$ machines with $[n/m]$ local data points on each to parallelize the computation of \eqref{eqn:saga}. Formally speaking, at each epoch, we first randomly partition the data to $m$ different sets. Then, we apply the SAGA algorithm presented in Section~\ref{sec1} for each dataset in $m$ different machine. After passing all data in each subset, we combine the results by updating the gradient table and candidate solution. The updates for epoch $e$ for each $k+1$ then become:
 \begin{enumerate}
 	\item Randomly partition the dataset to $m$ non-overlapping set $R_1, \cdots, R_m$.
-	\item For each machine $i \in \{ 1, \cdots, m \}$, pick a random sample $x^k(i)$ from $R_i$.
+	\item For each machine $s \in \{ 1, \cdots, m \}$, pick a random sample $x^k(s)$ from $R_s$.
 	\begin{enumerate}
-		\item If $ k = 1 $ then $x^k(i) = x(e)$
-		\item Take $\phi_j^{k+1}(i) = x^k(i)$.
-		\item Update $x(i)$:
+		\item If $ k = 1 $ then $x^k(s) = x(e)$
+		\item Take $\phi_j^{k+1}(s) = x^k(s)$.
+		\item Update $x^{k+1}(s)$:
 		\begin{equation} \label{eqn:distsaga1}
-			w^{k+1}(i) = x^k(i) - \gamma \left[ f_j'(\phi_j^{k+1}(i)) - f_j'(\phi_j^k(i))
-			+ \frac1n \sum_{j \in R_i}^n f_i'(\phi_j^k(i)) \right] ,
+			w^{k+1}(s) = x^k(s) - \gamma \left[ f_j'(\phi_j^{k+1}(s)) - f_j'(\phi_j^k(s))
+			+ \frac1n \sum_{j \in R_i} f_j'(\phi_j^k(s)) \right] ,
 		\end{equation}
-		$$x^{k+1}(i) = \prox_\gamma^h (w^{k+1}(k)).$$
+		$$x^{k+1}(s) = \prox_\gamma^h (w^{k+1}(s)).$$
 		\item If $ k > [n/m]$ break
 		\item $k = k+1$
 	\end{enumerate}	
 	\item Combine the result by
-	$$ x(e+1) = \frac{1}{m} \sum_{i=1}^m x^k(i) $$
+	$$ x(e+1) = \frac{1}{m} \sum_{s=1}^m x^k(s) $$
 \end{enumerate}
 
 \subsection{Distributed SAGA II}
@@ -169,7 +169,7 @@ In the second approach presented in Figure~\ref{2figs-show-b}, we randomly pick 
 		\item Take $\phi_j^{k+1}(s) = x^k(s)$, and store $f_j'(\phi_j^{k+1}(s))$ in the table.
 		All other entries in the table remain unchanged. The quantity $\phi_j^{k+1}(s)$
 		is not explicitly stored.
-		\item Update $x$ using $f_j'(\phi_j^{k+1}(s))$, $f_j'(\phi_j^k(s))$ and the table
+		\item Update $x^{k+1}(s)$ using $f_j'(\phi_j^{k+1}(s))$, $f_j'(\phi_j^k(s))$ and the table
 		average:
 		\begin{equation}
 		w^{k+1}(s) = x^k(s) - \gamma \left[ f_j'(\phi_j^{k+1}(s)) - f_j'(\phi_j^k(s))
@@ -199,9 +199,9 @@ is to predict the release year of a song from audio features. The experimental r
 %
 %\begin{figure*} [bt]
 %	\centering
-%	\subfigure[$N=10$ training samples]{\label{2figs-a} \includegraphics[width=0.48\columnwidth]{compare.eps}} \hspace{0pt}
-%	\subfigure[$N=100$ training samples]{\label{2figs-b} \includegraphics[width=0.48\columnwidth]{compare2.eps}}
-%	\caption{Out-of-sample performance (solid blue line) and the average CCR (dashed red line)}
+%	\subfigure[Convergence in terms of iteration]{\label{2figs-a} \includegraphics[width=0.48\columnwidth]{compare.eps}} \hspace{0pt}
+%	\subfigure[Convergence in terms of simulation time]{\label{2figs-b} \includegraphics[width=0.48\columnwidth]{compare2.eps}}
+%	\caption{Comaprison between two Distributed SAGA algorithms and SAGA}
 %	\label{2figs}
 %\end{figure*}
 
