@@ -1,0 +1,834 @@
+%-------------------------------------------------------------------------------
+% COLORS
+%-------------------------------------------------------------------------------
+\definecolor{col1}{RGB}{100,149,237} %blue
+\definecolor{col2}{RGB}{154,192,205} %cyan
+\definecolor{col3}{RGB}{255,0,0} %red
+\definecolor{col4}{RGB}{255,69,0} %orange
+\definecolor{col5}{RGB}{0,205,0} %green
+\definecolor{col6}{RGB}{255,255,10} %yellow
+
+\definecolor{grau}{gray}{.95} %gray
+\definecolor{colCO}{gray}{.8} %gray
+\definecolor{colTank}{RGB}{213,255,151}
+
+%-------------------------------------------------------------------------------
+% OBJECTS
+%-------------------------------------------------------------------------------
+\newcounter{xunits}
+\newcounter{yunits}
+\newcounter{units}
+\newcounter{step}
+\newcounter{x}
+\newcounter{y}
+\newcounter{x1}
+\newcounter{x2}
+\newcounter{y1}
+\newcounter{y2}
+\newcounter{length}
+
+%------------------------------------
+% Schedule
+%------------------------------------
+
+\newcommand{\makeschedule}
+{\setcounter{xunits}{68}
+\scriptsize
+\put(0,0){\vector(1,0){241.5}}
+\put(0,0){\vector(0,1){150}}
+\put(244.8,0){\makebox(0,0)[l]{min}}
+\multiput(15.244,0)(15.244,0){15}{\line(0,-1){1.5}}
+\multiput(15.244,-3)(15.244,0){15}{\makebox(0,0)[tc]{\arabic{xunits}}
+\addtocounter{xunits}{68}}
+%\multiput(0,18)(0,18){8}{\line(-1,0){1.5}}
+\put(-4,135.000){\makebox(0,0)[r]{\tiny{PM1}}}
+\put(0,127){\line(1,0){230.000}}
+\put(-4,117.000){\makebox(0,0)[r]{\tiny{FM1}}}
+\put(0,109){\line(1,0){230.000}}
+\put(-4,99.000){\makebox(0,0)[r]{\tiny{FM2}}}
+\put(0,91){\line(1,0){230.000}}
+\put(-4,81.000){\makebox(0,0)[r]{\tiny{S1}}}
+\put(-4,63.000){\makebox(0,0)[r]{\tiny{S2}}}
+\put(-4,45.000){\makebox(0,0)[r]{\tiny{S3}}}
+\put(-4,27.000){\makebox(0,0)[r]{\tiny{PL1}}}
+\put(0,19){\line(1,0){230.000}}
+\put(-4,9.000){\makebox(0,0)[r]{\tiny{PL2}}}
+\put(0,1){\line(1,0){230.000}}
+\normalsize}
+
+%------------------------------------
+% Storage tank
+%------------------------------------
+
+\newcommand{\storageTank}[2]{
+    \setcounter{step}{#1}
+    %left line
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*4}
+    \setcounter{length}{\value{step}*12}
+    \put(\value{x},\value{y}){\line(0,1){\value{length}}}
+    %right line
+    \setcounter{x}{\value{step}*20}
+    \setcounter{y}{\value{step}*4}
+    \setcounter{length}{\value{step}*12}
+    \put(\value{x},\value{y}){\line(0,1){\value{length}}}
+
+    %ellipse on top
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*16}
+    \setcounter{x1}{\value{step}*0}
+    \setcounter{y1}{\value{step}*18}
+    \setcounter{x2}{\value{step}*5}
+    \setcounter{y2}{\value{step}*19}
+    \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+    \setcounter{x}{\value{step}*5}
+    \setcounter{y}{\value{step}*19}
+    \setcounter{x1}{\value{step}*10}
+    \setcounter{y1}{\value{step}*20}
+    \setcounter{x2}{\value{step}*15}
+    \setcounter{y2}{\value{step}*19}
+    \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+    \setcounter{x}{\value{step}*15}
+    \setcounter{y}{\value{step}*19}
+    \setcounter{x1}{\value{step}*20}
+    \setcounter{y1}{\value{step}*18}
+    \setcounter{x2}{\value{step}*20}
+    \setcounter{y2}{\value{step}*16}
+    \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*12}
+    \put(\value{x},\value{y}){
+        \setcounter{x}{\value{step}*0}
+        \setcounter{y}{\value{step}*4}
+        \setcounter{x1}{\value{step}*0}
+        \setcounter{y1}{\value{step}*2}
+        \setcounter{x2}{\value{step}*5}
+        \setcounter{y2}{\value{step}}
+        \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+        \setcounter{x}{\value{step}*5}
+        \setcounter{y}{\value{step}}
+        \setcounter{x1}{\value{step}*10}
+        \setcounter{y1}{\value{step}*0}
+        \setcounter{x2}{\value{step}*15}
+        \setcounter{y2}{\value{step}}
+        \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+        \setcounter{x}{\value{step}*15}
+        \setcounter{y}{\value{step}}
+        \setcounter{x1}{\value{step}*20}
+        \setcounter{y1}{\value{step}*2}
+        \setcounter{x2}{\value{step}*20}
+        \setcounter{y2}{\value{step}*4}
+        \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+        }
+    %ellipse on bottom
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*4}
+    \setcounter{x1}{\value{step}*0}
+    \setcounter{y1}{\value{step}*2}
+    \setcounter{x2}{\value{step}*5}
+    \setcounter{y2}{\value{step}}
+    \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+    \setcounter{x}{\value{step}*5}
+    \setcounter{y}{\value{step}}
+    \setcounter{x1}{\value{step}*10}
+    \setcounter{y1}{\value{step}*0}
+    \setcounter{x2}{\value{step}*15}
+    \setcounter{y2}{\value{step}}
+    \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+    \setcounter{x}{\value{step}*15}
+    \setcounter{y}{\value{step}}
+    \setcounter{x1}{\value{step}*20}
+    \setcounter{y1}{\value{step}*2}
+    \setcounter{x2}{\value{step}*20}
+    \setcounter{y2}{\value{step}*4}
+    \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+    \setcounter{x}{\value{step}*10}
+    \setcounter{y}{\value{step}*7}
+    \put(\value{x},\value{y}){\makebox(0,0){\tiny{#2}}}
+}
+
+%------------------------------------
+% Storage tank
+%------------------------------------
+
+\newcommand{\largeStorageTank}[2]{
+    \setcounter{step}{#1}
+    %left line
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*4}
+    \setcounter{length}{\value{step}*12}
+    \put(\value{x},\value{y}){\line(0,1){\value{length}}}
+    %right line
+    \setcounter{x}{\value{step}*20}
+    \setcounter{y}{\value{step}*4}
+    \setcounter{length}{\value{step}*12}
+    \put(\value{x},\value{y}){\line(0,1){\value{length}}}
+
+    %ellipse on top
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*16}
+    \setcounter{x1}{\value{step}*0}
+    \setcounter{y1}{\value{step}*18}
+    \setcounter{x2}{\value{step}*5}
+    \setcounter{y2}{\value{step}*19}
+    \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+    \setcounter{x}{\value{step}*5}
+    \setcounter{y}{\value{step}*19}
+    \setcounter{x1}{\value{step}*10}
+    \setcounter{y1}{\value{step}*20}
+    \setcounter{x2}{\value{step}*15}
+    \setcounter{y2}{\value{step}*19}
+    \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+    \setcounter{x}{\value{step}*15}
+    \setcounter{y}{\value{step}*19}
+    \setcounter{x1}{\value{step}*20}
+    \setcounter{y1}{\value{step}*18}
+    \setcounter{x2}{\value{step}*20}
+    \setcounter{y2}{\value{step}*16}
+    \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*12}
+    \put(\value{x},\value{y}){
+        \setcounter{x}{\value{step}*0}
+        \setcounter{y}{\value{step}*4}
+        \setcounter{x1}{\value{step}*0}
+        \setcounter{y1}{\value{step}*2}
+        \setcounter{x2}{\value{step}*5}
+        \setcounter{y2}{\value{step}}
+        \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+        \setcounter{x}{\value{step}*5}
+        \setcounter{y}{\value{step}}
+        \setcounter{x1}{\value{step}*10}
+        \setcounter{y1}{\value{step}*0}
+        \setcounter{x2}{\value{step}*15}
+        \setcounter{y2}{\value{step}}
+        \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+        \setcounter{x}{\value{step}*15}
+        \setcounter{y}{\value{step}}
+        \setcounter{x1}{\value{step}*20}
+        \setcounter{y1}{\value{step}*2}
+        \setcounter{x2}{\value{step}*20}
+        \setcounter{y2}{\value{step}*4}
+        \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+        }
+    %ellipse on bottom
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*4}
+    \setcounter{x1}{\value{step}*0}
+    \setcounter{y1}{\value{step}*2}
+    \setcounter{x2}{\value{step}*5}
+    \setcounter{y2}{\value{step}}
+    \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+    \setcounter{x}{\value{step}*5}
+    \setcounter{y}{\value{step}}
+    \setcounter{x1}{\value{step}*10}
+    \setcounter{y1}{\value{step}*0}
+    \setcounter{x2}{\value{step}*15}
+    \setcounter{y2}{\value{step}}
+    \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+    \setcounter{x}{\value{step}*15}
+    \setcounter{y}{\value{step}}
+    \setcounter{x1}{\value{step}*20}
+    \setcounter{y1}{\value{step}*2}
+    \setcounter{x2}{\value{step}*20}
+    \setcounter{y2}{\value{step}*4}
+    \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+    \setcounter{x}{\value{step}*10}
+    \setcounter{y}{\value{step}*7}
+    \put(\value{x},\value{y}){\makebox(0,0){\tiny{#2}}}
+}
+
+\newcommand{\filledLargeStorageTank}[2]{
+    \setcounter{step}{#1}
+    %left line
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*4}
+    \setcounter{x1}{\value{step}*0}
+    \setcounter{y1}{\value{step}*16}
+    \moveto(\value{x},\value{y})\lineto(\value{x1},\value{y1})
+
+    %ellipse on top
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*16}
+    \setcounter{x1}{\value{step}*0}
+    \setcounter{y1}{\value{step}*18}
+    \setcounter{x2}{\value{step}*5}
+    \setcounter{y2}{\value{step}*19}
+    \curveto(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})
+    \setcounter{x}{\value{step}*5}
+    \setcounter{y}{\value{step}*19}
+    \setcounter{x1}{\value{step}*10}
+    \setcounter{y1}{\value{step}*20}
+    \setcounter{x2}{\value{step}*15}
+    \setcounter{y2}{\value{step}*19}
+    \curveto(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})
+    \setcounter{x}{\value{step}*15}
+    \setcounter{y}{\value{step}*19}
+    \setcounter{x1}{\value{step}*20}
+    \setcounter{y1}{\value{step}*18}
+    \setcounter{x2}{\value{step}*20}
+    \setcounter{y2}{\value{step}*16}
+    \curveto(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*12}
+
+    %right line
+    \setcounter{x}{\value{step}*20}
+    \setcounter{y}{\value{step}*4}
+    \lineto(\value{x},\value{y})
+
+    %ellipse on bottom
+    \setcounter{x}{\value{step}*20}
+    \setcounter{y}{\value{step}*4}
+    \setcounter{x1}{\value{step}*20}
+    \setcounter{y1}{\value{step}*2}
+    \setcounter{x2}{\value{step}*15}
+    \setcounter{y2}{\value{step}}
+    \curveto(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})
+    \setcounter{x}{\value{step}*15}
+    \setcounter{y}{\value{step}}
+    \setcounter{x1}{\value{step}*10}
+    \setcounter{y1}{\value{step}*0}
+    \setcounter{x2}{\value{step}*5}
+    \setcounter{y2}{\value{step}}
+    \curveto(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})
+    \setcounter{x}{\value{step}*5}
+    \setcounter{y}{\value{step}}
+    \setcounter{x1}{\value{step}*0}
+    \setcounter{y1}{\value{step}*2}
+    \setcounter{x2}{\value{step}*0}
+    \setcounter{y2}{\value{step}*4}
+    \curveto(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})
+    \fillpath
+}
+
+\newcommand{\smallStorageTank}[2]{
+    \setcounter{step}{#1}
+    %left line
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*4}
+    \setcounter{length}{\value{step}*6}
+    \put(\value{x},\value{y}){\line(0,1){\value{length}}}
+    %right line
+    \setcounter{x}{\value{step}*20}
+    \setcounter{y}{\value{step}*4}
+    \setcounter{length}{\value{step}*6}
+    \put(\value{x},\value{y}){\line(0,1){\value{length}}}
+
+    %ellipse on top
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*(-6)}
+    \put(\value{x},\value{y}){
+        \setcounter{x}{\value{step}*0}
+        \setcounter{y}{\value{step}*16}
+        \setcounter{x1}{\value{step}*0}
+        \setcounter{y1}{\value{step}*18}
+        \setcounter{x2}{\value{step}*5}
+        \setcounter{y2}{\value{step}*19}
+        \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+        \setcounter{x}{\value{step}*5}
+        \setcounter{y}{\value{step}*19}
+        \setcounter{x1}{\value{step}*10}
+        \setcounter{y1}{\value{step}*20}
+        \setcounter{x2}{\value{step}*15}
+        \setcounter{y2}{\value{step}*19}
+        \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+        \setcounter{x}{\value{step}*15}
+        \setcounter{y}{\value{step}*19}
+        \setcounter{x1}{\value{step}*20}
+        \setcounter{y1}{\value{step}*18}
+        \setcounter{x2}{\value{step}*20}
+        \setcounter{y2}{\value{step}*16}
+        \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+        \setcounter{x}{\value{step}*0}
+        \setcounter{y}{\value{step}*12}
+        \put(\value{x},\value{y}){
+            \setcounter{x}{\value{step}*0}
+            \setcounter{y}{\value{step}*4}
+            \setcounter{x1}{\value{step}*0}
+            \setcounter{y1}{\value{step}*2}
+            \setcounter{x2}{\value{step}*5}
+            \setcounter{y2}{\value{step}}
+            \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+            \setcounter{x}{\value{step}*5}
+            \setcounter{y}{\value{step}}
+            \setcounter{x1}{\value{step}*10}
+            \setcounter{y1}{\value{step}*0}
+            \setcounter{x2}{\value{step}*15}
+            \setcounter{y2}{\value{step}}
+            \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+            \setcounter{x}{\value{step}*15}
+            \setcounter{y}{\value{step}}
+            \setcounter{x1}{\value{step}*20}
+            \setcounter{y1}{\value{step}*2}
+            \setcounter{x2}{\value{step}*20}
+            \setcounter{y2}{\value{step}*4}
+            \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+            }
+        }
+    %ellipse on bottom
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*4}
+    \setcounter{x1}{\value{step}*0}
+    \setcounter{y1}{\value{step}*2}
+    \setcounter{x2}{\value{step}*5}
+    \setcounter{y2}{\value{step}}
+    \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+    \setcounter{x}{\value{step}*5}
+    \setcounter{y}{\value{step}}
+    \setcounter{x1}{\value{step}*10}
+    \setcounter{y1}{\value{step}*0}
+    \setcounter{x2}{\value{step}*15}
+    \setcounter{y2}{\value{step}}
+    \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+    \setcounter{x}{\value{step}*15}
+    \setcounter{y}{\value{step}}
+    \setcounter{x1}{\value{step}*20}
+    \setcounter{y1}{\value{step}*2}
+    \setcounter{x2}{\value{step}*20}
+    \setcounter{y2}{\value{step}*4}
+    \put(0,0){\qbezier(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})}
+    \setcounter{x}{\value{step}*10}
+    \setcounter{y}{\value{step}*7}
+    \put(\value{x},\value{y}){\makebox(0,0){\tiny{#2}}}
+}
+
+\newcommand{\filledSmallStorageTank}[2]{
+    \setcounter{step}{#1}
+    %left line
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*4}
+    \setcounter{x1}{\value{step}*0}
+    \setcounter{y1}{\value{step}*10}
+    \moveto(\value{x},\value{y})\lineto(\value{x1},\value{y1})
+
+    %ellipse on top
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*10}
+    \setcounter{x1}{\value{step}*0}
+    \setcounter{y1}{\value{step}*12}
+    \setcounter{x2}{\value{step}*5}
+    \setcounter{y2}{\value{step}*13}
+    \curveto(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})
+    \setcounter{x}{\value{step}*5}
+    \setcounter{y}{\value{step}*13}
+    \setcounter{x1}{\value{step}*10}
+    \setcounter{y1}{\value{step}*14}
+    \setcounter{x2}{\value{step}*15}
+    \setcounter{y2}{\value{step}*13}
+    \curveto(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})
+    \setcounter{x}{\value{step}*15}
+    \setcounter{y}{\value{step}*13}
+    \setcounter{x1}{\value{step}*20}
+    \setcounter{y1}{\value{step}*12}
+    \setcounter{x2}{\value{step}*20}
+    \setcounter{y2}{\value{step}*10}
+    \curveto(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})
+    \setcounter{x}{\value{step}*0}
+    \setcounter{y}{\value{step}*6}
+
+    %right line
+    \setcounter{x}{\value{step}*20}
+    \setcounter{y}{\value{step}*4}
+    \lineto(\value{x},\value{y})
+
+    %ellipse on bottom
+    \setcounter{x}{\value{step}*20}
+    \setcounter{y}{\value{step}*4}
+    \setcounter{x1}{\value{step}*20}
+    \setcounter{y1}{\value{step}*2}
+    \setcounter{x2}{\value{step}*15}
+    \setcounter{y2}{\value{step}}
+    \curveto(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})
+    \setcounter{x}{\value{step}*15}
+    \setcounter{y}{\value{step}}
+    \setcounter{x1}{\value{step}*10}
+    \setcounter{y1}{\value{step}*0}
+    \setcounter{x2}{\value{step}*5}
+    \setcounter{y2}{\value{step}}
+    \curveto(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})
+    \setcounter{x}{\value{step}*5}
+    \setcounter{y}{\value{step}}
+    \setcounter{x1}{\value{step}*0}
+    \setcounter{y1}{\value{step}*2}
+    \setcounter{x2}{\value{step}*0}
+    \setcounter{y2}{\value{step}*4}
+    \curveto(\value{x},\value{y})(\value{x1},\value{y1})(\value{x2},\value{y2})
+    \fillpath
+}
+
+%------------------------------------
+% Centered framebox
+%------------------------------------
+
+\newcommand{\centeredframebox}[3]
+{\put(0,0){\line(0,1){#2}}
+\put(0,0){\line(1,0){#1}}
+\put(#1,#2){\line(0,-1){#2}}
+\put(#1,#2){\line(-1,0){#1}}
+\makebox(#1,#2){#3}}
+
+%------------------------------------
+% Centered framecolorbox
+%------------------------------------
+
+\newcommand{\centeredframecolorbox}[4]
+{\color{#4}
+\put(0,0){\rule{0mm}{0mm}}
+\put(0,0){\rule{#1\unitlength}{#2\unitlength}}
+\color{black}
+\put(0,0){\centeredframebox{#1}{#2}{#3}}}
+
+%------------------------------------
+% Centered framebox randinhalt
+%------------------------------------
+
+\newcommand{\centeredframeboxrandinhalt}[5]
+{\color{#4}
+\put(0,0){\line(0,1){#2}}
+\put(0,0){\line(1,0){#1}}
+\put(#1,#2){\line(0,-1){#2}}
+\put(#1,#2){\line(-1,0){#1}}
+\color{black}
+\makebox(#1,#2){\color{#5}#3\color{black}}}
+
+%------------------------------------
+% Centered framecolorbox randinhalt
+%------------------------------------
+
+\newcommand{\colorboxfillframechar}[6]
+{\color{#4}
+\put(0,0){\rule{0mm}{0mm}}
+\put(0,0){\rule{#1\unitlength}{#2\unitlength}}
+\color{black}
+\put(0,0){\centeredframeboxrandinhalt{#1}{#2}{#3}{#5}{#6}}}
+
+%------------------------------------
+% Cylinder with plate
+%------------------------------------
+
+\newcommand{\cylinderWithPlate}[1]
+{
+      %design 1
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{0}{50}
+      \strokepath
+      %design 2
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{50}{100}
+      \strokepath
+      %design 3
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{100}{150}
+      \strokepath
+      %design 4
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{150}{200}
+      \strokepath
+      %design 5
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{200}{250}
+      \strokepath
+      %design 6
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{250}{300}
+      \strokepath
+      %design 7
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{300}{350}
+      \strokepath
+      %white gap
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{350}{350}
+      \strokepath
+      \color{white}
+      \put(0,0){\circle*{12}}
+      \color{black}
+      %outer circle
+      \put(0,0){\circle{12}}
+      %center
+      \put(0,0){\circle*{1}}
+      %arrows
+      \moveto(0,5)
+      \circlearc{0}{0}{5}{90}{180}
+      \strokepath
+      \put(-5,0){\vector(0,-1){1}}
+      \moveto(5,0)
+      \closepath
+      \circlearc{0}{0}{5}{360}{270}
+      \strokepath
+      \put(5,0){\vector(0,1){1}}
+      %colordevice
+      \color{#1}
+      \polygon*(-2,14)(0,7)(2,14)
+      \color{black}
+      \polygon(-2,14)(0,7)(2,14)
+}
+
+%------------------------------------
+% Cylinder with plate with marked white border slots
+%------------------------------------
+
+\newcommand{\cylinderWithPlateWithMarkedWhiteBorderSlots}[1]
+{
+      %design 1
+      \moveto(0,0)
+      \color{yellow}
+      \circlearc{0}{0}{7}{0}{50}
+      \fillpath
+      \color{black}
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{0}{50}
+      \strokepath
+      %design 2
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{50}{100}
+      \strokepath
+      %design 3
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{100}{150}
+      \strokepath
+      %design 4
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{150}{200}
+      \strokepath
+      %design 5
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{200}{250}
+      \strokepath
+      %design 6
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{250}{300}
+      \strokepath
+      %design 7
+      \moveto(0,0)
+      \color{yellow}
+      \circlearc{0}{0}{7}{300}{350}
+      \fillpath
+      \moveto(0,0)
+      \color{black}
+      \circlearc{0}{0}{7}{300}{350}
+      \strokepath
+      %white gap
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{350}{350}
+      \strokepath
+      \color{white}
+      \put(0,0){\circle*{12}}
+      \color{black}
+      %outer circle
+      \put(0,0){\circle{12}}
+      %center
+      \put(0,0){\circle*{1}}
+      %arrows
+      \moveto(0,5)
+      \circlearc{0}{0}{5}{90}{180}
+      \strokepath
+      \put(-5,0){\vector(0,-1){1}}
+      \moveto(5,0)
+      \closepath
+      \circlearc{0}{0}{5}{360}{270}
+      \strokepath
+      \put(5,0){\vector(0,1){1}}
+      %colordevice
+      \color{#1}
+      \polygon*(-2,14)(0,7)(2,14)
+      \color{black}
+      \polygon(-2,14)(0,7)(2,14)
+}
+
+%------------------------------------
+% Cylinder with plate for standard designs
+%------------------------------------
+
+\newcommand{\cylinderWithPlateForStandardDesign}[1]
+{
+      %design 1
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{0}{50}
+      \strokepath
+      %design 2
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{50}{100}
+      \strokepath
+      %design 3
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{100}{150}
+      \strokepath
+      %design 4
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{150}{150}
+      \strokepath
+      %design 5
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{160}{210}
+      \strokepath
+      %design 6
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{210}{260}
+      \strokepath
+      %design 7
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{260}{310}
+      \strokepath
+      %white gap
+      \moveto(0,0)
+      \color{green}
+      \circlearc{0}{0}{7}{310}{360}
+      \fillpath
+      \moveto(0,0)
+      \color{black}
+      \circlearc{0}{0}{7}{310}{360}
+      \strokepath
+      \color{white}
+      \put(0,0){\circle*{12}}
+      \color{black}
+      %outer circle
+      \put(0,0){\circle{12}}
+      %center
+      \put(0,0){\circle*{1}}
+      %arrows
+      \moveto(0,5)
+      \circlearc{0}{0}{5}{90}{180}
+      \strokepath
+      \put(-5,0){\vector(0,-1){1}}
+      \moveto(5,0)
+      \closepath
+      \circlearc{0}{0}{5}{360}{270}
+      \strokepath
+      \put(5,0){\vector(0,1){1}}
+      %colordevice
+      \color{#1}
+      \polygon*(-2,14)(0,7)(2,14)
+      \color{black}
+      \polygon(-2,14)(0,7)(2,14)
+}
+
+%------------------------------------
+% Cylinder with plate but without Coloring Device
+%------------------------------------
+
+\newcommand{\cylinderWithPlateWithoutColoringDevice}
+{
+      %design 1
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{0}{50}
+      \strokepath
+      %design 2
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{50}{100}
+      \strokepath
+      %design 3
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{100}{150}
+      \strokepath
+      %design 4
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{150}{200}
+      \strokepath
+      %design 5
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{200}{250}
+      \strokepath
+      %design 6
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{250}{300}
+      \strokepath
+      %design 7
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{300}{350}
+      \strokepath
+      %white gap
+      \moveto(0,0)
+      \circlearc{0}{0}{7}{350}{350}
+      \strokepath
+      \color{white}
+      \put(0,0){\circle*{12}}
+      \color{black}
+      %outer circle
+      \put(0,0){\circle{12}}
+      %center
+      \put(0,0){\circle*{1}}
+      %arrows
+      \moveto(0,5)
+      \circlearc{0}{0}{5}{90}{180}
+      \strokepath
+      \put(-5,0){\vector(0,-1){1}}
+      \moveto(5,0)
+      \closepath
+      \circlearc{0}{0}{5}{360}{270}
+      \strokepath
+      \put(5,0){\vector(0,1){1}}
+}
+
+%------------------------------------
+% Cylinder without plate
+%------------------------------------
+
+\newcommand{\cylinderWithoutPlate}[1]
+{
+      %outer circle
+      \put(0,0){\circle{12}}
+      %center
+      \put(0,0){\circle*{1}}
+      %arrows
+      \moveto(0,5)
+      \circlearc{0}{0}{5}{90}{180}
+      \strokepath
+      \put(-5,0){\vector(0,-1){1}}
+      \moveto(5,0)
+      \closepath
+      \circlearc{0}{0}{5}{360}{270}
+      \strokepath
+      \put(5,0){\vector(0,1){1}}
+      %colordevice
+      \color{#1}
+      \polygon*(-2,14)(0,7)(2,14)
+      \color{black}
+      \polygon(-2,14)(0,7)(2,14)
+}
+%------------------------------------
+% pochetta with napkin (horizontal,beach design)
+%------------------------------------
+
+\newcommand{\pochettaWithNapkinBeach}[1]{
+    \put(0,0){\parbox[b]{2mm}{\includegraphics[angle=270, width=2mm]{images/beach_folded}}}
+    \color{white}
+    \polygon*(0,-5)(0,-6)(0.2,-6)(0,-5)
+    \polygon*(2,-5)(2,-6)(1.8,-6)(2,-5)
+    \color{#1}
+    \polygon*(0.7,-4.5)(1.3,-4.5)(1.3,-5.5)(0.7,-5.5)
+    \color{black}
+    \polygon(0,-5)(0.2,-6)(1.8,-6)(2,-5)(2,0)(0,0)
+    \put(0.6,-4.5){\line(1,0){0.8}}
+}
+%------------------------------------
+% pochetta with napkin (horizontal,mountain design)
+%------------------------------------
+
+\newcommand{\pochettaWithNapkinMountain}[1]{
+    \put(0,0){\parbox[b]{2mm}{\includegraphics[angle=270, width=2mm]{images/mountain_folded}}}
+    \color{white}
+    \polygon*(0,-5)(0,-6)(0.2,-6)(0,-5)
+    \polygon*(2,-5)(2,-6)(1.8,-6)(2,-5)
+    \color{#1}
+    \polygon*(0.7,-4.5)(1.3,-4.5)(1.3,-5.5)(0.7,-5.5)
+    \color{black}
+    \polygon(0,-5)(0.2,-6)(1.8,-6)(2,-5)(2,0)(0,0)
+    \put(0.6,-4.5){\line(1,0){0.8}}
+}
+
+
+%------------------------------------
+% pochetta without napkin (horizontal)
+%------------------------------------
+
+\newcommand{\pochettaWithoutNapkin}{
+    \put(0,0){\parbox[b]{2mm}{\includegraphics[angle=270, width=2mm]{images/beach_folded}}}
+    \color{white}
+    \polygon*(0,-5)(0,-6)(0.2,-6)(0,-5)
+    \polygon*(2,-5)(2,-6)(1.8,-6)(2,-5)
+    \color{black}
+    \polygon(0,-5)(0.2,-6)(1.8,-6)(2,-5)(2,0)(0,0)
+    \put(0.6,-4.5){\line(1,0){0.8}}
+}
