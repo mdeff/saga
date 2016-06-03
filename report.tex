@@ -186,24 +186,28 @@ As the authors of \cite{defazio_saga_2014}, we tested our method on the Million
 Song dataset\footnote{\url{http://labrosa.ee.columbia.edu/millionsong/}}. The
 problem, as stated on the UCI repository where the data was downloaded
 from\footnote{\url{https://archive.ics.uci.edu/ml/datasets/YearPredictionMSD}},
-is to predict the release year of a song from audio features. The experimental results are available in the presentation slides.
+is to predict the release year of a song from audio features. 
 
-%\begin{figure*} [bt]
-%	\centering
-%	\subfigure[$N=10$ training samples]{\label{3figs-a} \includegraphics[width=0.31\columnwidth]{distributed1.eps}} \hspace{0pt}
-%	\subfigure[$N=100$ training samples]{\label{3figs-b} \includegraphics[width=0.31\columnwidth]{distributed2.eps}} \hspace{0pt}
-%	\subfigure[$N=1000$ training samples]{\label{3figs-c} \includegraphics[width=0.31\columnwidth]{distributed3.eps}}
-%	\caption{Out-of-sample performance (solid blue line) and the average CCR (dashed red line)}
-%	\label{3figs}
-%\end{figure*}
-%
-%\begin{figure*} [bt]
-%	\centering
-%	\subfigure[Convergence in terms of iteration]{\label{2figs-a} \includegraphics[width=0.48\columnwidth]{compare.eps}} \hspace{0pt}
-%	\subfigure[Convergence in terms of simulation time]{\label{2figs-b} \includegraphics[width=0.48\columnwidth]{compare2.eps}}
-%	\caption{Comaprison between two Distributed SAGA algorithms and SAGA}
-%	\label{2figs}
-%\end{figure*}
+
+To showcase the capabilities of our proposed approaches, we test them with the Million Song dataset. We solve the regularized least square problem with Tikhonov regularization term. In this experiment, we set the regularization factor to $5\times 10^{-4}$ while we use $n=10^4$ training samples. Figure~\ref{3figs} shows the performance of our distributed methods. The good choice of learning in all gradient methods is crucial as it reflects in Figure~\ref{3figs-a} and \ref{3figs-c}. Moreover, Figure~\ref{3figs-b} presents the required time for $1000$ iteration using different models, namely using parfor loop which is the pure distributed implementation, for loop which is a serial distribution, and vectorization which relies on parallel computation in linear algebra MATLAB libraries. As you can see, the communication overhead in parfor is so costly and it is better to implement every thing in vectorized form.
+
+\begin{figure*} [h]
+	\centering
+	\subfigure[Learning rate in the first approach]{\label{3figs-a} \includegraphics[width=0.31\columnwidth]{distributed1.eps}} \hspace{0pt}
+	\subfigure[Different kind of parallelization in the second approach]{\label{3figs-b} \includegraphics[width=0.31\columnwidth]{distributed2.eps}} \hspace{0pt}
+	\subfigure[Learning rate in the second approach]{\label{3figs-c} \includegraphics[width=0.31\columnwidth]{distributed3.eps}}
+	\caption{The performance of distributed SAGA }
+	\label{3figs}
+\end{figure*}
+
+Figure~\ref{2figs} reflects a comparison between the two proposed approach in term of convergence rate. As you can see, the first distributed approach has the best convergence in terms of simulation time while the second approach has the best convergence in terms of iteration.
+\begin{figure*} [h]
+	\centering
+	\subfigure[Convergence in terms of iteration]{\label{2figs-a} \includegraphics[width=0.31\columnwidth]{compare.eps}} \hspace{0pt}
+	\subfigure[Convergence in terms of simulation time]{\label{2figs-b} \includegraphics[width=0.31\columnwidth]{compare2.eps}}
+	\caption{Comparison between two Distributed SAGA algorithms and SAGA}
+	\label{2figs}
+\end{figure*}
 
 \printbibliography
 
