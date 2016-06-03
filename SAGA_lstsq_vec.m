@@ -1,11 +1,11 @@
-function [x, info] = SAGA_lstsq_minibach(A, b, parameter)
+function [x, info] = SAGA_lstsq_vec(A, b, parameter)
     % Parameter setting
     [n, d]       = size(A);                          
     epoch_max    = parameter.epoch_max;           % Max epoch number
     gamma        = parameter.gamma;               % Learning rate
     x            = parameter.x0;                  % Initial condition
     lambda       = parameter.lambda;              % Regularization
-    s            = parameter.s;                   % minibatch size
+    m            = parameter.m;                   % # of cores
     % Output initialization    
     info         = struct('iter_time',[],'fx',[],'epoch',[]);
     % Initialization
@@ -18,11 +18,11 @@ function [x, info] = SAGA_lstsq_minibach(A, b, parameter)
         for j = 1 : n
             tic
             perm = randperm(n);
-            i = perm(1:s);
+            i = perm(1:m);
             % Update the next iteration
             gx         = A(i,:) .* repmat((A(i,:)*x' - b(i)),[1,d]);
-            w_next     = x - gamma * (mean(gx,1) - mean(g_phi(i,:)) + g_phi_av);
-            x_next     = 1 / (1+lambda*gamma) * w_next;
+            w_next     = repmat(x,[m,1]) - gamma * (gx - g_phi(i,:) + repmat(g_phi_av,[1,d]));
+            x_next     = 1 / (1+lambda*gamma) * mean(w_next);
             g_phi(i,:) = gx;     
             g_phi_av   = mean(g_phi,1);
             % Save information

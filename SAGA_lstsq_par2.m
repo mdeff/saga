@@ -1,4 +1,4 @@
-function [x, info] = SAGA_lstsq_par(A, b, parameter)
+function [x, info] = SAGA_lstsq_par2(A, b, parameter)
     % Parameter setting
     [n, d]       = size(A);                          
     epoch_max    = parameter.epoch_max;           % Max epoch number
@@ -20,7 +20,7 @@ function [x, info] = SAGA_lstsq_par(A, b, parameter)
             x_sub = zeros(m,d);
             ind    = zeros(m,1);
             gx_sub = zeros(m,d);
-            parfor k = 1 : m
+            for k = 1 : m
                 i = randi(n);
                 % Update the next iteration
                 gx          = A(i,:)* (A(i,:)*x' - b(i));
