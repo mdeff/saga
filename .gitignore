@@ -6,6 +6,10 @@
 *.log
 *.out
 
+*.nav
+*.snm
+*.toc
+
 *.synctex.gz
 
 *.bcf
