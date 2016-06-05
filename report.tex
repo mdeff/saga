@@ -1,11 +1,11 @@
-\documentclass[a4paper,11pt]{article}
+\documentclass[a4paper,10pt]{article}
 
 \usepackage[T1]{fontenc} \usepackage{lmodern} \usepackage[utf8]{inputenc}
 \usepackage[english]{babel} \usepackage{csquotes}
 \usepackage{float} \usepackage{graphicx,subfigure,epstopdf}
 \usepackage{amssymb,amsmath} %\usepackage{siunitx}
 \usepackage[nodayofweek]{datetime}
-\usepackage[top=3.5cm,bottom=2.5cm,left=3cm,right=3cm,headheight=30pt]{geometry}
+\usepackage[top=3.0cm,bottom=1.5cm,left=2cm,right=2cm,headheight=30pt]{geometry}
 \usepackage[style=numeric,backend=biber]{biblatex} \bibliography{refs}
 \usepackage{fancyhdr} \pagestyle{fancy} \usepackage{lastpage}
 \usepackage{parskip} \setlength{\parskip}{.5em} \setlength{\parindent}{1em}
@@ -14,7 +14,7 @@
 	pdftitle={Incremental Gradient Methods},
 	pdfsubject={Project proposal}
 }
-\lhead{Advanced Topics in Data Sciences\\ Project proposal}
+\lhead{Advanced Topics in Data Sciences\\ Project report}
 \chead{\hspace{2cm}EPFL\\ \hspace{2cm}\shortdate\today}
 \rhead{Michaël \textsc{Defferrard}\\ Soroosh \textsc{Shafiee}}
 \cfoot{}
@@ -22,6 +22,7 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\B}{\mathcal{B}}
 \newcommand{\eqnref}[1]{(\ref{eqn:#1})}
+\newcommand{\figref}[1]{Figure~\ref{fig:#1}}
 \newcommand{\prox}{\textrm{prox}}
 %\DeclareMathOperator*{\prox}{prox}
 
@@ -51,17 +52,17 @@ Many machine learning problems can be cast in \eqnref{problem}, such as
 (constrained) Least-Square or Logistic Regressions with $\ell_1$ or $\ell_2$
 regularization; where $x$ would represent the model parameters, $f_i$ the data
 fidelity term applied to a particular sample $i$, and $h$ a regularization or
-indicator function of a convex set. As such, these methods are of use in our
-respective domains of expertise: Signal Processing on Graphs and Risk Analytics.
+indicator function of a convex set.
 
-In this project we explored two approaches to modify the SAGA algorithm:
+In this project we explored two approaches to improve SAGA towards two different
+goals:
 \begin{itemize}
 	\item A \textbf{memory-efficient SAGA}, by way of computing and storing
-		gradients over mini-batches instead of single sample, as is done for the
-		infamous Stochastic Gradient Descent. It turns out that is approach is
-		also faster than the original algorithm because it exploits the
-		vectorial instructions of modern processing units.
-	\item A \textbf{distributed SAGA}, by way of distributing the gradient
+		gradients over mini-batches instead of single samples, as is done for
+		the infamous Stochastic Gradient Descent. It turns out that this
+		approach is also faster than the original algorithm as it exploits the
+		vectorial capabilities of modern processing units.
+	\item A \textbf{time-efficient SAGA}, by way of distributing the gradient
 		computation over many CPU cores while fusing the results and updating
 		the model parameters on the master.
 \end{itemize}
@@ -71,9 +72,12 @@ In this project we explored two approaches to modify the SAGA algorithm:
 The algorithm starts with some known initial vector $x^0 \in \R^d$ and known
 derivatives $f_i' (\phi_i^0) \in \R^d$ with $\phi_i^0 = x^0$ for each $i$. These
 derivatives are stored in a table data-structure of length $n$, or alternatively
-a $n \times d$ matrix. It uses a step size of $\gamma$ and, given the value of
-$x^k$ and of each $f_i' (\phi_i^k)$ at the end of iteration $k$, makes the
-following updates for iteration $k+1$:
+a $n \times d$ matrix. It uses a step size of $\gamma$\footnote{The authors
+recommend a learning rate of $\gamma=1/(2(\mu n+L))$ in the strongly convex
+case, $\gamma=1/(3(\mu n+L))$ if the strong convexity requirement only holds on
+average and $\gamma=1/(3L)$ for non-strongly convex problems.} and, given the
+value of $x^k$ and of each $f_i' (\phi_i^k)$ at the end of iteration $k$, makes
+the following updates for iteration $k+1$:
 \begin{enumerate}
 \item Pick a $j$ uniformly at random.
 \item Take $\phi_j^{k+1} = x^k$, and store $f_j'(\phi_j^{k+1})$ in the table.
@@ -88,104 +92,136 @@ following updates for iteration $k+1$:
 	$$x^{k+1} = \prox_\gamma^h (w^{k+1}).$$
 \end{enumerate}
 
-A choice for the learning rate $\gamma$ can be $\gamma0 = \frac{1}{3(\mu n + L)}$ where $L$ is the gradient Lipschitz continuity of $f_i$ and $\mu$ is the strong convexity parameter.
-\section{Memory-efficient SAGA}
+As the authors of \cite{defazio_saga_2014}, we tested our algorithms by training
+a linear regression model (with $\ell_1$ or $\ell_2$ regularization) on the
+Million Song dataset\footnote{
+\url{http://labrosa.ee.columbia.edu/millionsong}}. The problem, as stated on the
+UCI repository\footnote{
+\url{http://archive.ics.uci.edu/ml/datasets/YearPredictionMSD}} where the data
+was downloaded from, is to predict the release year of a song from audio
+features.
 
-We first form $\frac{n}m$ mini-batches $\{\B_i\}_i^{\frac{n}m}$ of size $|\B_i|
-= m$ and take gradients w.r.t. them, such that the gradient matrix is of size
-$\frac{n}m \times d$ instead of $n \times d$. The updates for iteration $k+1$
-then becomes:
+\section{Mini-batch SAGA}
+
+We first form $\frac{n}m$ mini-batches $\{\B_i\}_{i=1}^{\frac{n}m}$ of size
+$|\B_i| = m$ and take gradients w.r.t. them, such that the gradient matrix is of
+size $\frac{n}m \times d$ instead of $n \times d$. The updates for iteration
+$k+1$ then becomes:
 \begin{enumerate}
 \item Pick a $i$ uniformly at random in $[1, \frac{n}m]$.
 \item Take $\phi_j^{k+1} = x^k \ \forall \ j \in \B_i$, and store $\frac1m
 	\sum_{j\in\B_i} f_j'(\phi_j^{k+1})$ in the table.
-\item Update $x$:
-	\begin{equation} \label{eqn:minisaga}
-	w^{k+1} = x^k - \gamma \left[ \frac1m \sum_{j\in\B_i} f_j'(\phi_j^{k+1})
+\item Update $x^{k+1}= \prox_\gamma^h \left\{ x^k - \gamma \left[ \frac1m \sum_{j\in\B_i} f_j'(\phi_j^{k+1})
 	- \frac1m \sum_{j\in\B_i} f_j'(\phi_j^k)
-	+ \frac1n \sum_{i=1}^m \sum_{j\in\B_i} f_j'(\phi_j^k) \right] ,
-	\end{equation}
-	$$x^{k+1} = \prox_\gamma^h (w^{k+1}).$$
+	+ \frac1n \sum_{i=1}^m \sum_{j\in\B_i} f_j'(\phi_j^k) \right] \right\}.$
 \end{enumerate}
 
-Note that mini-batches can either be formed during initialization and kept
-intact for the whole training. They can alternatively be formed again at the end
-of each training epoch. While this is much more expensive, because the gradient
-matrix has to be initialized again, we found no difference in performance.
+Note that one can usually vectorize the computation of $\sum_{j\in\B_i}
+f_j'(\phi_j^k)$. E.g. for a least-square problem $\min_x \frac12 \|Ax - y\|$,
+the gradient is given by $A_{\B_i}^T A_{\B_i} x$, where $A_{\B_i}$ represents
+the $m$ columns of $A$ selected by the mini-batch $\B_i$. That is where the
+computational advantage of the mini-batch approach comes from.
 
 Note that mini-batches can either be formed during initialization and kept
-intact for the whole training. They can alternatively be formed again at the end
-of each training epoch. While this is much more expensive, because the gradient
-matrix has to be initialized again, we found no difference in performance.
+intact for the whole training. They can alternatively be reformed at the
+beginning of each training epoch. While this is much more expensive, because the
+gradient matrix has to be initialized again, we found no difference in
+performance.
 
 \subsection{Experiments}
 
-As the authors of \cite{defazio_saga_2014}, we tested our method on the Million
-Song dataset\footnote{\url{http://labrosa.ee.columbia.edu/millionsong/}}. The
-problem, as stated on the UCI repository where the data was downloaded
-from\footnote{\url{https://archive.ics.uci.edu/ml/datasets/YearPredictionMSD}},
-is to predict the release year of a song from audio features.
+While the convergence rate is the same for all mini-batch sizes given the same
+learning rate, bigger sizes need a smaller learning rate to avoid divergence.
+We therefore ran experiments with various mini-batch sizes $m$; with an
+optimized learning rate $\gamma$ for each. \figref{eval_saga_mb} clearly shows
+that mini-batch SAGA can outperform regular SAGA in convergence time while
+requiring less memory.
+
+\begin{figure*}[ht]
+	\centering
+	\subfigure[Working memory to store gradients.]{
+		\label{fig:memory}
+		\includegraphics[height=3cm,width=8cm]{memory}}
+	\hspace{0pt}
+	\subfigure[$R^2$ score on test set after 100s training.]{
+		\label{fig:r2_score}
+		\includegraphics[height=3cm,width=8cm]{r2_score}}
+	\\
+	\subfigure[Objective w.r.t. running time.]{
+		\label{fig:perf}
+		\includegraphics[height=4cm,width=12cm]{perf}}
+	\caption{Performance evaluations of mini-batch SAGA w.r.t. various
+	mini-batch sizes $m$.}
+	\label{fig:eval_saga_mb}
+\end{figure*}
 
 \section{Distributed SAGA}
 
-In this section, we consider two distributed SAGA methods that is based on a parallelization of SAGA. An illustration of two methods is presented in Figure~\ref{2figs-show}. In the sequel, we let $m$ be the number of machines.
-
-\begin{figure*} [h]
+\begin{figure*}[ht]
 	\centering
-	\subfigure[First approach]{\label{2figs-show-a} \includegraphics[width=0.48\columnwidth]{Picture2.PNG}} \hspace{0pt}
-	\subfigure[Second approach]{\label{2figs-show-b} \includegraphics[width=0.48\columnwidth]{Picture1.PNG}}
+	\subfigure[First approach]{\label{2figs-show-a}
+	\includegraphics[height=3cm,width=0.48\columnwidth]{Picture2.png}}
+	\hspace{0pt}
+	\subfigure[Second approach]{\label{2figs-show-b}
+	\includegraphics[height=3cm,width=0.48\columnwidth]{Picture1.png}}
 	\caption{Distributed SAGA}
 	\label{2figs-show}
 \end{figure*}
 
-\subsection{Distributed SAGA I}
-In the first approach presented in Figure~\ref{2figs-show-a}, we randomly partition the $n$ data points onto $m$ machines with $[n/m]$ local data points on each to parallelize the computation of \eqref{eqn:saga}. Formally speaking, at each epoch, we first randomly partition the data to $m$ different sets. Then, we apply the SAGA algorithm presented in Section~\ref{sec1} for each dataset in $m$ different machine. After passing all data in each subset, we combine the results by updating the gradient table and candidate solution. The updates for epoch $e$ for each $k+1$ then become:
+\paragraph{Variant I.} A first approach, shown in Figure~\ref{2figs-show-a}, is
+to randomly partition the $n$ data points onto $m$ machines with $[n/m]$ local
+data points on each to parallelize the computation of \eqref{eqn:saga}. Formally
+speaking, at each epoch, we first randomly partition the data to $m$ different
+sets. Then, we apply the SAGA algorithm presented in Section~\ref{sec1} for each
+dataset in $m$ different machine. After passing all data in each subset, we
+combine the results by updating the gradient table and candidate solution. The
+updates for epoch $e$ for each $k+1$ then become:
 \begin{enumerate}
 	\item Randomly partition the dataset to $m$ non-overlapping set $R_1, \cdots, R_m$.
 	\item For each machine $s \in \{ 1, \cdots, m \}$, pick a random sample $x^k(s)$ from $R_s$.
 	\begin{enumerate}
 		\item If $ k = 1 $ then $x^k(s) = x(e)$
 		\item Take $\phi_j^{k+1}(s) = x^k(s)$.
-		\item Update $x^{k+1}(s)$:
-		\begin{equation} \label{eqn:distsaga1}
-			w^{k+1}(s) = x^k(s) - \gamma \left[ f_j'(\phi_j^{k+1}(s)) - f_j'(\phi_j^k(s))
-			+ \frac1n \sum_{j \in R_i} f_j'(\phi_j^k(s)) \right] ,
-		\end{equation}
-		$$x^{k+1}(s) = \prox_\gamma^h (w^{k+1}(s)).$$
+		\item Update $x^{k+1}(s) = \prox_\gamma^h \left\{ 
+			x^k(s) - \gamma \left[ f_j'(\phi_j^{k+1}(s)) - f_j'(\phi_j^k(s))
+		+ \frac1n \sum_{j \in R_i} f_j'(\phi_j^k(s)) \right] \right\}.$
 		\item If $ k > [n/m]$ break
 		\item $k = k+1$
 	\end{enumerate}	
-	\item Combine the result by
-	$$ x(e+1) = \frac{1}{m} \sum_{s=1}^m x^k(s) $$
+	\item Results are combined with $ x(e+1) = \frac{1}{m} \sum_{s=1}^m x^k(s)$.
 \end{enumerate}
 
-\subsection{Distributed SAGA II}
-
-In the second approach presented in Figure~\ref{2figs-show-b}, we randomly pick $m$ data points. Then, each machine receives one sample and the computation of \eqref{eqn:saga} is computed in parallel. To combine the results, we average all the outputs. The updates for iteration $k+1$ then become:
+\paragraph{Variant II.} A second approach, shown in Figure~\ref{2figs-show-b},
+is to randomly pick $m$ data points and send one to each of the $m$ machines.
+Each machine then computes \eqref{eqn:saga} in parallel. All results are finally
+averaged. The updates for iteration $k+1$ then become:
 \begin{enumerate}	
 	\item For each machine $s \in \{ 1, \cdots, m \}$
 	\begin{enumerate}
-		\item Pick a random numbers $i$ in $[1, n]$.
+		\item Pick a random number $i$ in $[1, n]$.
 		\item Take $\phi_j^{k+1}(s) = x^k(s)$, and store $f_j'(\phi_j^{k+1}(s))$ in the table.
-		All other entries in the table remain unchanged. The quantity $\phi_j^{k+1}(s)$
-		is not explicitly stored.
-		\item Update $x^{k+1}(s)$ using $f_j'(\phi_j^{k+1}(s))$, $f_j'(\phi_j^k(s))$ and the table
-		average:
-		\begin{equation}
-		w^{k+1}(s) = x^k(s) - \gamma \left[ f_j'(\phi_j^{k+1}(s)) - f_j'(\phi_j^k(s))
-		+ \frac1n \sum_{i=1}^n f_i'(\phi_i^k(s)) \right] ,
-		\end{equation}
-		$$x^{k+1}(s) = \prox_\gamma^h (w^{k+1}(s)).$$
+		\item Update $x^{k+1}(s) = \prox_\gamma^h \left\{ x^k(s) - \gamma \left[ f_j'(\phi_j^{k+1}(s)) - f_j'(\phi_j^k(s))
+			+ \frac1n \sum_{i=1}^n f_i'(\phi_i^k(s)) \right] \right\}.$
 	\end{enumerate}
-	\item Combine the result by
-	$$ x^{k+1} = \frac{1}{m} \sum_{s=1}^m x^{k+1}(s) $$
+	\item Results are combined with $ x^{k+1} = \frac{1}{m} \sum_{s=1}^m
+		x^{k+1}(s)$.
 \end{enumerate}
 
 \subsection{Experiments}
 
-To showcase the capabilities of our proposed approaches, we test them with the Million Song dataset. We solve the regularized least square problem with Tikhonov regularization term. In this experiment, we set the regularization factor to $5\times 10^{-4}$ while we use $n=10^4$ training samples and $m=8$ different machines (or CPU cores). Figure~\ref{3figs} shows the performance of our distributed methods. The good choice of learning in all gradient methods is crucial as it reflects in Figure~\ref{3figs-a} and \ref{3figs-c}. Moreover, Figure~\ref{3figs-b} presents the required time for $1000$ iteration using different models, namely using parfor loop which is the pure distributed implementation, for loop which is a serial implementation, and vectorized implementation which relies on parallel implementation of linear algebra libraries in MATLAB. As you can see, the communication overhead in parfor is so costly and it is important to implement every thing in vectorized form.
+In this experiment, we set the regularization factor to $5\times 10^{-4}$ while
+we use $n=10^4$ training samples and $m=8$ different machines (or CPU cores).
+Figure~\ref{3figs} shows the performance of our distributed methods. The good
+choice of learning in all gradient methods is crucial as it reflects in
+Figure~\ref{3figs-a} and \ref{3figs-c}. Moreover, Figure~\ref{3figs-b} presents
+the required time for $1000$ iteration using different models, namely using
+parfor loop which is the pure distributed implementation, for loop which is a
+serial implementation, and vectorized implementation which relies on parallel
+implementation of linear algebra libraries in MATLAB. As you can see, the
+communication overhead in parfor is so costly and it is important to implement
+every thing in vectorized form.
 
-\begin{figure*} [h]
+\begin{figure*}[ht]
 	\centering
 	\subfigure[Learning rate in the first approach]{\label{3figs-a} \includegraphics[width=0.31\columnwidth]{distributed1.eps}} \hspace{0pt}
 	\subfigure[Different kind of parallelization in the second approach]{\label{3figs-b} \includegraphics[width=0.31\columnwidth]{distributed2.eps}} \hspace{0pt}
@@ -194,8 +230,12 @@ To showcase the capabilities of our proposed approaches, we test them with the M
 	\label{3figs}
 \end{figure*}
 
-Figure~\ref{2figs} reflects a comparison between the two proposed approach in term of convergence rate. As you can see, the first distributed approach has the best convergence in terms of simulation time while the second approach has the best convergence in terms of iteration.
-\begin{figure*} [h]
+Figure~\ref{2figs} compares the two proposed approaches in term of convergence
+rate. As you can see, the first distributed approach has the best convergence in
+terms of simulation time while the second approach has the best convergence in
+terms of iteration.
+
+\begin{figure*}[ht]
 	\centering
 	\subfigure[Convergence in terms of iteration]{\label{2figs-a} \includegraphics[width=0.31\columnwidth]{compare.eps}} \hspace{0pt}
 	\subfigure[Convergence in terms of simulation time]{\label{2figs-b} \includegraphics[width=0.31\columnwidth]{compare2.eps}}
