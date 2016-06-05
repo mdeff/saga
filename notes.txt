@@ -61,3 +61,11 @@ Incremental convex minimization algorithms
 	* DIR2: http://arxiv.org/pdf/1407.0898.pdf
 	* DIR4: http://www.jmlr.org/papers/volume13/lee12a/lee12a.pdf
 	* (http://arxiv.org/pdf/1503.03703.pdf)
+
+
+2016-06-02 Todo for mini-batch SAGA
+-----------------------------------
+
+* regularization
+* learning rate
+* performance w.r.t. running time
