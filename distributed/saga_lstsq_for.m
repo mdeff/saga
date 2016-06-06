@@ -1,4 +1,4 @@
-function [x, info] = SAGA_lstsq_for(A, b, parameter)
+function [x, info] = saga_lstsq_for(A, b, parameter)
     % Parameter setting
     [n, d]       = size(A);                          
     epoch_max    = parameter.epoch_max;           % Max epoch number

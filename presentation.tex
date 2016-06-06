@@ -8,7 +8,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb,amsfonts}
-\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage{colortbl}
 \usepackage{lmodern}
 \usepackage{ae}
@@ -18,7 +18,6 @@
 \usepackage{wasysym}
 \usepackage{rotating}
 \usepackage{calc}
-\usepackage{Util}
 \usepackage{eurosym}
 \usepackage{mathtools}
 \usepackage{color}
@@ -26,18 +25,10 @@
 \usepackage{cancel}
 \usepackage{multirow}
 \usepackage{bm,xcolor}
-\usepackage{amsthm,epstopdf,dsfont}
+\usepackage{amsthm,dsfont}
 
-\usepackage{float} \usepackage{graphicx,subfigure,epstopdf}
+\usepackage{float} \usepackage{graphicx,subfigure}
 
-\theoremstyle{definition}
-\newtheorem{Thrm}{Theorem}
-\newtheorem{Lmm}{Lemma}
-\newtheorem{Exm}{Example}
-\newtheorem{Sol}{Solution}
-\newcommand\hcancel[2][black]{\setbox0=\hbox{$#2$}
-	\rlap{\raisebox{.45\ht0}{\textcolor{#1}{\rule{\wd0}{1pt}}}}#2} 
-%\usepackage{movie15}
 %---------------- Struktur und Themes ----------------
 %
 \mode<presentation>
@@ -132,18 +123,6 @@
   \end{beamercolorbox}}
 }
 
-\newcommand{\real}{\mathbb{R}}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\realp}{\mathbb{R}_{>0}}
-\newcommand{\realzp}{\mathbb{R}_{\ge 0}}
-\newcommand{\integer}{\mathbb{Z}}
-\newcommand{\integerp}{\mathbb{Z}_{>0}}
-\newcommand{\integerzp}{\mathbb{Z}_{\ge 0}}
-\newcommand{\argmin}{\mathrm{arg\,min}}
-
-\newcommand{\explain}[2]{\underset{\mathclap{\overset{\uparrow}{#2}}}{#1}}
-\newcommand{\explainup}[2]{\overset{\mathclap{\underset{\downarrow}{#2}}}{#1}}
-
 
 \setbeamercovered{dynamic}
 
@@ -197,13 +176,13 @@
 
 \thispagestyle{empty}
 
-\title[]{SAGA}
+%----------------  Actual content  ----------------
 
-\author[Advance Topics in Data Science: Spring 2016]{Michael Defferrard$^\dagger$, Soroosh Shafieezadeh Abadeh$^\dagger$}
+\title[SAGA]{Mini-batch \& distributed SAGA\\
+	\small{Incremental Gradient Methods}}
+\author[Advanced Topics in Data Science (spring 2016)]{Michaël Defferrard$^\dagger$, Soroosh Shafieezadeh Abadeh$^\dagger$}
 \institute{$^\dagger$ Ecole Polytechnique Federale de Lausanne}
-
-
-\date{Student Presentation\\$3^{\text{th}}$ June}
+\date{Student Presentation\\$3^{\text{rd}}$ June}
 
 \setlength{\unitlength}{1mm}
 
@@ -211,6 +190,95 @@
 
 \frame{\titlepage}
 
-\include{Slides}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\prox}{\textrm{prox}}
+
+\centering
+\section{Introduction}
+
+\begin{frame}{Introduction}
+
+	\vspace{-0.8cm}
+	$$\text{Problem: } \min_{x \in \R^d} \frac{1}{n} \sum_{i=1}^n f_i(x) +
+	h(x)$$
+	\vspace{-0.2cm}
+
+	\begin{block}{SAGA}
+	Given a learning rate $\gamma$, the value of $x^k$ and of each $f_i'
+	(\phi_i^k)$ at the end of iteration $k$, the updates for iteration $k+1$ are
+	given by:
+	\begin{enumerate}
+	\item Pick a $j$ uniformly at random.
+	\item Take $\phi_j^{k+1} = x^k$, and store $f_j'(\phi_j^{k+1})$ in the table.
+	\item Update $x$:
+		\begin{equation*}
+		w^{k+1} = x^k - \gamma \left[ f_j'(\phi_j^{k+1}) - f_j'(\phi_j^k)
+		+ \frac1n \sum_{i=1}^n f_i'(\phi_i^k) \right] ,
+		\end{equation*}
+		$$x^{k+1} = \prox_\gamma^h (w^{k+1}).$$
+	\end{enumerate}
+	\end{block}
+
+\end{frame}
+
+\begin{frame}{Improvements}
+	\vspace{2cm}
+		\begin{itemize}
+			\item Memory-efficiency $\rightarrow$ \textbf{mini-batch} SAGA
+			\item Time-efficiency $\rightarrow$ \textbf{distributed} SAGA
+		\end{itemize}
+\end{frame}
+
+\section{Mini-batch SAGA}
+
+\begin{frame}{Mini-batch SAGA}
+	\vfill
+
+	\begin{enumerate}
+	\item Pick a $i$ uniformly at random in $[1, \frac{n}m]$.
+	\item Take $\phi_j^{k+1} = x^k \ \forall \ j \in \B_i$, and store $\frac1m
+		\sum_{j\in\B_i} f_j'(\phi_j^{k+1})$ in the table.
+	\item Update $x$:
+	\end{enumerate}
+
+	\begin{equation*}
+	w^{k+1} = x^k - \gamma \left[ \frac1m \sum_{j\in\B_i} f_j'(\phi_j^{k+1})
+	- \frac1m \sum_{j\in\B_i} f_j'(\phi_j^k)
+	+ \frac1n \sum_{i=1}^m \sum_{j\in\B_i} f_j'(\phi_j^k) \right] ,
+	\end{equation*}
+	$$x^{k+1} = \prox_\gamma^h (w^{k+1}).$$
+
+	\vfill
+\end{frame}
+
+\begin{frame}{Results}
+	\includegraphics[height=3cm,width=0.5\columnwidth]{figs/memory}
+	\includegraphics[height=3cm,width=0.5\columnwidth]{figs/r2_score}
+	\vfill
+	\includegraphics[height=4cm,width=\columnwidth]{figs/perf}
+\end{frame}
+
+\section{Distributed SAGA}
+
+\begin{frame}{Variant I}
+	\includegraphics[scale=0.35]{figs/architecture_1}
+	\vfill
+	\includegraphics[width=0.5\columnwidth]{figs/arch1_lr}
+\end{frame}
+
+\begin{frame}{Variant II}
+	\includegraphics[scale=0.35]{figs/architecture_2}
+	\vfill
+	\includegraphics[width=0.5\columnwidth]{figs/arch2_par}
+	\includegraphics[width=0.5\columnwidth]{figs/arch2_lr}
+\end{frame}
+
+\begin{frame}{Comparison}
+	\vfill
+	\includegraphics[width=0.5\columnwidth]{figs/conv_iterations}
+	\includegraphics[width=0.5\columnwidth]{figs/conv_time}
+	\vfill
+\end{frame}
 
 \end{document}

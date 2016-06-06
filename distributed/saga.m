@@ -1,4 +1,4 @@
-function [x, info] = SAGA(A, b, fx, gradf, prox, parameter)
+function [x, info] = saga(A, b, fx, gradf, prox, parameter)
     % Parameter setting
     [n, d]       = size(A);                          
     epoch_max    = parameter.epoch_max;           % Max epoch number

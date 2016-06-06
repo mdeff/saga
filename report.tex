@@ -2,7 +2,7 @@
 
 \usepackage[T1]{fontenc} \usepackage{lmodern} \usepackage[utf8]{inputenc}
 \usepackage[english]{babel} \usepackage{csquotes}
-\usepackage{float} \usepackage{graphicx,subfigure,epstopdf}
+\usepackage{float} \usepackage{graphicx,subfigure}
 \usepackage{amssymb,amsmath} %\usepackage{siunitx}
 \usepackage[nodayofweek]{datetime}
 \usepackage[top=3.0cm,bottom=1.5cm,left=2cm,right=2cm,headheight=30pt]{geometry}
@@ -141,15 +141,15 @@ requiring less memory.
 	\centering
 	\subfigure[Working memory to store gradients.]{
 		\label{fig:memory}
-		\includegraphics[height=3cm,width=8cm]{memory}}
+		\includegraphics[height=3cm,width=8cm]{figs/memory}}
 	\hspace{0pt}
 	\subfigure[$R^2$ score on test set after 100s training.]{
 		\label{fig:r2_score}
-		\includegraphics[height=3cm,width=8cm]{r2_score}}
+		\includegraphics[height=3cm,width=8cm]{figs/r2_score}}
 	\\
 	\subfigure[Objective w.r.t. running time.]{
 		\label{fig:perf}
-		\includegraphics[height=4cm,width=12cm]{perf}}
+		\includegraphics[height=4cm,width=12cm]{figs/perf}}
 	\caption{Performance evaluations of mini-batch SAGA w.r.t. various
 	mini-batch sizes $m$.}
 	\label{fig:eval_saga_mb}
@@ -159,18 +159,20 @@ requiring less memory.
 
 \begin{figure*}[ht]
 	\centering
-	\subfigure[First approach]{\label{2figs-show-a}
-	\includegraphics[height=3cm,width=0.48\columnwidth]{Picture2.png}}
+	\subfigure[First variant.]{
+		\label{fig:architecture_1}
+		\includegraphics[height=3cm,width=0.48\columnwidth]{figs/architecture_1}}
 	\hspace{0pt}
-	\subfigure[Second approach]{\label{2figs-show-b}
-	\includegraphics[height=3cm,width=0.48\columnwidth]{Picture1.png}}
-	\caption{Distributed SAGA}
+	\subfigure[Second variant.]{
+		\label{fig:architecture_2}
+		\includegraphics[height=3cm,width=0.48\columnwidth]{figs/architecture_2}}
+	\caption{Two variants of distributed SAGA.}
 	\label{2figs-show}
 \end{figure*}
 
-\paragraph{Variant I.} A first approach, shown in Figure~\ref{2figs-show-a}, is
+\paragraph{Variant I.} A first approach, shown in \figref{architecture_1}, is
 to randomly partition the $n$ data points onto $m$ machines with $[n/m]$ local
-data points on each to parallelize the computation of \eqref{eqn:saga}. Formally
+data points on each to parallelize the computation of \eqnref{saga}. Formally
 speaking, at each epoch, we first randomly partition the data to $m$ different
 sets. Then, we apply the SAGA algorithm presented in Section~\ref{sec1} for each
 dataset in $m$ different machine. After passing all data in each subset, we
@@ -191,9 +193,9 @@ updates for epoch $e$ for each $k+1$ then become:
 	\item Results are combined with $ x(e+1) = \frac{1}{m} \sum_{s=1}^m x^k(s)$.
 \end{enumerate}
 
-\paragraph{Variant II.} A second approach, shown in Figure~\ref{2figs-show-b},
+\paragraph{Variant II.} A second approach, shown in \figref{architecture_2},
 is to randomly pick $m$ data points and send one to each of the $m$ machines.
-Each machine then computes \eqref{eqn:saga} in parallel. All results are finally
+Each machine then computes \eqnref{saga} in parallel. All results are finally
 averaged. The updates for iteration $k+1$ then become:
 \begin{enumerate}	
 	\item For each machine $s \in \{ 1, \cdots, m \}$
@@ -211,9 +213,9 @@ averaged. The updates for iteration $k+1$ then become:
 
 In this experiment, we set the regularization factor to $5\times 10^{-4}$ while
 we use $n=10^4$ training samples and $m=8$ different machines (or CPU cores).
-Figure~\ref{3figs} shows the performance of our distributed methods. The good
-choice of learning in all gradient methods is crucial as it reflects in
-Figure~\ref{3figs-a} and \ref{3figs-c}. Moreover, Figure~\ref{3figs-b} presents
+\figref{distributed_perf} shows the performance of our distributed methods. The
+good choice of learning in all gradient methods is crucial as it reflects in
+\figref{arch1_lr} and \figref{arch2_lr}. Moreover, \figref{arch2_par} presents
 the required time for $1000$ iteration using different models, namely using
 parfor loop which is the pure distributed implementation, for loop which is a
 serial implementation, and vectorized implementation which relies on parallel
@@ -223,24 +225,37 @@ every thing in vectorized form.
 
 \begin{figure*}[ht]
 	\centering
-	\subfigure[Learning rate in the first approach]{\label{3figs-a} \includegraphics[width=0.31\columnwidth]{distributed1.eps}} \hspace{0pt}
-	\subfigure[Different kind of parallelization in the second approach]{\label{3figs-b} \includegraphics[width=0.31\columnwidth]{distributed2.eps}} \hspace{0pt}
-	\subfigure[Learning rate in the second approach]{\label{3figs-c} \includegraphics[width=0.31\columnwidth]{distributed3.eps}}
-	\caption{The performance of distributed SAGA }
-	\label{3figs}
+	\subfigure[Variant I: learning rate.]{
+		\label{fig:arch1_lr}
+		\includegraphics[width=0.31\columnwidth]{figs/arch1_lr}}
+	\hspace{0pt}
+	\subfigure[Variant II: different parallelizations.]{
+		\label{fig:arch2_par}
+		\includegraphics[width=0.31\columnwidth]{figs/arch2_par}}
+	\hspace{0pt}
+	\subfigure[Variant II: learning rate.]{
+		\label{fig:arch2_lr}
+		\includegraphics[width=0.31\columnwidth]{figs/arch2_lr}}
+	\caption{Performance measures of distributed SAGA.}
+	\label{fig:distributed_perf}
 \end{figure*}
 
-Figure~\ref{2figs} compares the two proposed approaches in term of convergence
+\figref{conv} compares the two proposed approaches in term of convergence
 rate. As you can see, the first distributed approach has the best convergence in
 terms of simulation time while the second approach has the best convergence in
 terms of iteration.
 
 \begin{figure*}[ht]
 	\centering
-	\subfigure[Convergence in terms of iteration]{\label{2figs-a} \includegraphics[width=0.31\columnwidth]{compare.eps}} \hspace{0pt}
-	\subfigure[Convergence in terms of simulation time]{\label{2figs-b} \includegraphics[width=0.31\columnwidth]{compare2.eps}}
-	\caption{Comparison between two Distributed SAGA algorithms and SAGA}
-	\label{2figs}
+	\subfigure[Convergence w.r.t. the number of iterations.]{
+		\label{fig:conv_iterations}
+		\includegraphics[width=0.31\columnwidth]{figs/conv_iterations}}
+	\hspace{0pt}
+	\subfigure[Convergence w.r.t. running time.]{
+		\label{fig:conv_time}
+		\includegraphics[width=0.31\columnwidth]{figs/conv_time}}
+	\caption{Comparison between two distributed SAGA algorithms and regular SAGA.}
+	\label{fig:conv}
 \end{figure*}
 
 \printbibliography

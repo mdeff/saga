@@ -3,7 +3,7 @@ clearvars
 try
    load('data.mat')
 catch
-    A = load('YearPredictionMSD.txt');
+    A = load('../YearPredictionMSD.txt');
     b = A(:,1);
     A(:,1) = [];
 end
@@ -25,22 +25,22 @@ param.lambda = 5e-4;
 param.m = 8;
 param.s = 50;
 
-%% Experiment 1 
+%% Experiment 1
 param1 = param;
 param1.gamma = 1/(3*(mu*n+1));
-[~, info1] = SAGA_lstsq_dist(A_tr, b_tr, param1);
+[~, info1] = saga_lstsq_dist(A_tr, b_tr, param1);
 param2 = param;
 param2.gamma = 2/(3*(mu*n+1));
-[~, info2] = SAGA_lstsq_dist(A_tr, b_tr, param2);
+[~, info2] = saga_lstsq_dist(A_tr, b_tr, param2);
 param3 = param;
 param3.gamma = 5e-1/(3*(mu*n+1));
-[~, info3] = SAGA_lstsq_dist(A_tr, b_tr, param3);
+[~, info3] = saga_lstsq_dist(A_tr, b_tr, param3);
 param4 = param;
 param4.gamma = 1e-1/(3*(mu*n+1));
-[~, info4] = SAGA_lstsq_dist(A_tr, b_tr, param4);
+[~, info4] = saga_lstsq_dist(A_tr, b_tr, param4);
 param5 = param;
 param5.gamma = 5e-2/(3*(mu*n+1));
-[~, info5] = SAGA_lstsq_dist(A_tr, b_tr, param5);
+[~, info5] = saga_lstsq_dist(A_tr, b_tr, param5);
 figure;
 semilogy(info1.fx,'linewidth',2); hold on
 semilogy(info2.fx,'linewidth',2);
@@ -52,13 +52,13 @@ xlabel('# of epoch')
 ylabel('f(x)')
 legend('\gamma = \gamma_0', '\gamma = 2 \gamma_0', '\gamma = 0.5 * \gamma_0', ...
        '\gamma = 0.1 * \gamma_0', '\gamma = 0.05 * \gamma_0')
-%% Experminet 2
+%% Experiment 2
 param1 = param;
 param1.epoch_max = 1; 
 param1.gamma;
-[~, info1] = SAGA_lstsq_vec(A_tr, b_tr, param1);
-[~, info2] = SAGA_lstsq_parfor(A_tr, b_tr, param1);
-[~, info3] = SAGA_lstsq_for(A_tr, b_tr, param1);
+[~, info1] = saga_lstsq_vec(A_tr, b_tr, param1);
+[~, info2] = saga_lstsq_parfor(A_tr, b_tr, param1);
+[~, info3] = saga_lstsq_for(A_tr, b_tr, param1);
 
 figure;
 semilogy(cumsum(info1.iter_time),'linewidth',2); hold on
@@ -72,23 +72,23 @@ legend('for loop', 'parfor loop', 'vectorize')
 param1 = param;
 param1.epoch_max = 5; 
 param1.gamma = 1/(3*(mu*n+1));
-[~, info1] = SAGA_lstsq_vec(A_tr, b_tr, param1);
+[~, info1] = saga_lstsq_vec(A_tr, b_tr, param1);
 param2 = param;
 param2.epoch_max = 5;
 param2.gamma = 2/(3*(mu*n+1));
-[~, info2] = SAGA_lstsq_vec(A_tr, b_tr, param2);
+[~, info2] = saga_lstsq_vec(A_tr, b_tr, param2);
 param3 = param;
 param3.epoch_max = 5;
 param3.gamma = 5e-1/(3*(mu*n+1));
-[~, info3] = SAGA_lstsq_vec(A_tr, b_tr, param3);
+[~, info3] = saga_lstsq_vec(A_tr, b_tr, param3);
 param4 = param;
 param4.epoch_max = 5;
 param4.gamma = 1e-1/(3*(mu*n+1));
-[~, info4] = SAGA_lstsq_vec(A_tr, b_tr, param4);
+[~, info4] = saga_lstsq_vec(A_tr, b_tr, param4);
 param5 = param;
 param5.epoch_max = 5;
 param5.gamma = 5e-2/(3*(mu*n+1));
-[~, info5] = SAGA_lstsq_vec(A_tr, b_tr, param5);
+[~, info5] = saga_lstsq_vec(A_tr, b_tr, param5);
 %%
 figure;
 semilogy(info1.fx,'linewidth',2); hold on
@@ -103,14 +103,14 @@ legend('\gamma = \gamma_0', '\gamma = 2 \gamma_0', '\gamma = 0.5 * \gamma_0', ..
 %% Experiment 4
 param1 = param;
 param1.gamma = 0.1/(3*(mu*n+1));
-[x1, info1] = SAGA_lstsq(A_tr, b_tr, param1);
+[x1, info1] = saga_lstsq(A_tr, b_tr, param1);
 param2 = param;
 param2.gamma = 1/(3*(mu*n+1));
-[~, info2] = SAGA_lstsq_dist(A_tr, b_tr, param2);
+[~, info2] = saga_lstsq_dist(A_tr, b_tr, param2);
 fx2 = repmat(info2.fx,[n,1]);
 param3 = param;
 param3.gamma = 1/(3*(mu*n+1));
-[~, info3] = SAGA_lstsq_vec(A_tr, b_tr, param3);
+[~, info3] = saga_lstsq_vec(A_tr, b_tr, param3);
 %%
 figure;
 semilogy(info1.fx,'linewidth',2); hold on
