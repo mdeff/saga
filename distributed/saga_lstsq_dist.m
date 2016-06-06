@@ -5,6 +5,7 @@ function [x, info] = saga_lstsq_dist(A, b, parameter)
     gamma        = parameter.gamma;               % Learning rate
     x            = parameter.x0;                  % Initial condition
     m            = parameter.m;                   % # of cores
+    lambda       = parameter.lambda;              % l2 regularization
     
     % Output initialization    
     info         = struct('iter_time',[],'fx',[],'epoch',[]);
