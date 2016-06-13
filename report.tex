@@ -3,10 +3,10 @@
 \usepackage[T1]{fontenc} \usepackage{lmodern} \usepackage[utf8]{inputenc}
 \usepackage[english]{babel} \usepackage{csquotes}
 \usepackage{float} \usepackage{graphicx,subfigure}
-\usepackage{amssymb,amsmath} %\usepackage{siunitx}
+\usepackage{amssymb,amsmath,epstopdf} %\usepackage{siunitx}
 \usepackage[nodayofweek]{datetime}
 \usepackage[top=3.0cm,bottom=2.0cm,left=2.5cm,right=2.5cm,headheight=30pt]{geometry}
-\usepackage[style=numeric,backend=biber]{biblatex} \bibliography{refs}
+\usepackage{natbib} 
 \usepackage{fancyhdr} \pagestyle{fancy} \usepackage{lastpage}
 \usepackage{parskip} \setlength{\parskip}{.5em} \setlength{\parindent}{1em}
 \usepackage[colorlinks=true,allcolors=blue]{hyperref} \hypersetup{
@@ -59,12 +59,12 @@ goals:
 \begin{itemize}
 	\item A \textbf{memory-efficient SAGA}, by way of computing and storing
 		gradients over mini-batches instead of single samples, as is done for
-		the infamous Stochastic Gradient Descent. It turns out that this
+		the infamous Stochastic Gradient Descent \cite{konevcny2014ms2gd}. It turns out that this
 		approach is also faster than the original algorithm as it exploits the
 		vectorial capabilities of modern processing units.
 	\item A \textbf{time-efficient SAGA}, by way of distributing the gradient
 		computation over many CPU cores while fusing the results and updating
-		the model parameters on the master.
+		the model parameters on the master. The similar approach is also presented in \cite{lee2015distributed} for SVRG algorithm.
 \end{itemize}
 
 \section{SAGA algorithm} \label{sec1}
@@ -135,7 +135,7 @@ learning rate, larger mini-batches need a smaller learning rate to avoid
 divergence.  We therefore ran experiments with various mini-batch sizes $m$;
 with an optimized learning rate $\gamma$ for each. \figref{eval_saga_mb} clearly
 shows that mini-batch SAGA can outperform regular SAGA in convergence time while
-requiring less memory.
+requiring less memory. Other simulation results as well as the problem explanation can be found in Ipython notebook file. This file contains the authors of \cite{defazio_saga_2014} implementation in Cython which is used to assess our implementation.
 
 \begin{figure*}[ht]
 	\centering
@@ -231,15 +231,15 @@ parfor.
 	\centering
 	\subfigure[Variant I: learning rate.]{
 		\label{fig:arch1_lr}
-		\includegraphics[width=0.31\columnwidth]{figs/arch1_lr}}
+		\includegraphics[width=0.31\columnwidth]{figs/arch1_lr.eps}}
 	\hspace{0pt}
 	\subfigure[Variant II: different parallelizations.]{
 		\label{fig:arch2_par}
-		\includegraphics[width=0.31\columnwidth]{figs/arch2_par}}
+		\includegraphics[width=0.31\columnwidth]{figs/arch2_par.eps}}
 	\hspace{0pt}
 	\subfigure[Variant II: learning rate.]{
 		\label{fig:arch2_lr}
-		\includegraphics[width=0.31\columnwidth]{figs/arch2_lr}}
+		\includegraphics[width=0.31\columnwidth]{figs/arch2_lr.eps}}
 	\caption{Performance measures of distributed SAGA.}
 	\label{fig:distributed_perf}
 \end{figure*}
@@ -252,15 +252,16 @@ faster in the number of iterations.
 	\centering
 	\subfigure[Convergence w.r.t. the number of iterations.]{
 		\label{fig:conv_iterations}
-		\includegraphics[width=0.31\columnwidth]{figs/conv_iterations}}
+		\includegraphics[width=0.31\columnwidth]{figs/conv_iterations.eps}}
 	\hspace{0pt}
 	\subfigure[Convergence w.r.t. running time.]{
 		\label{fig:conv_time}
-		\includegraphics[width=0.31\columnwidth]{figs/conv_time}}
+		\includegraphics[width=0.31\columnwidth]{figs/conv_time.eps}}
 	\caption{Comparison between two distributed SAGA algorithms and regular SAGA.}
 	\label{fig:conv}
 \end{figure*}
 
-\printbibliography
+\bibliography{refs}
+\bibliographystyle{abbrv}
 
 \end{document}
