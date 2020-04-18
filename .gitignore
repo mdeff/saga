@@ -22,6 +22,7 @@
 .ipynb_checkpoints/
 
 *.txt
+!LICENSE.txt
 *.mat
 *.asv
 
